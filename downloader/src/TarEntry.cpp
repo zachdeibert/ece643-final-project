@@ -2,6 +2,7 @@
 #include <stdint.h>
 #include <string.h>
 #include <string>
+#include <vector>
 #include <sys/types.h>
 #include <ece643/downloader/TarEntry.hpp>
 
@@ -141,4 +142,12 @@ string TarEntry::filePrefix() const noexcept {
     memcpy(buf, ((const uint8_t *) this) + 345, 155);
     buf[155] = '\0';
     return string(buf);
+}
+
+const uint8_t *TarEntry::data() const noexcept {
+    return ((const uint8_t *) this) + 512;
+}
+
+vector<uint8_t> TarEntry::copy() const noexcept {
+    return vector<uint8_t>(data(), data() + size());
 }

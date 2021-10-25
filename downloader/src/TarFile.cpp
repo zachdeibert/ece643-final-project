@@ -20,10 +20,10 @@ TarFile::TarFile(const vector<uint8_t> &data) noexcept : data(data) {
     }
 }
 
-vector<TarEntry *>::const_iterator TarFile::begin() const noexcept {
+TarFile::const_iterator TarFile::begin() const noexcept {
     return entries.begin();
 }
 
-vector<TarEntry *>::const_iterator TarFile::end() const noexcept {
+TarFile::const_iterator TarFile::end() const noexcept {
     return entries.end();
 }

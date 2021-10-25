@@ -5,6 +5,7 @@
 #include <stdint.h>
 #include <string>
 #include <sys/types.h>
+#include <vector>
 
 namespace ece643 {
     namespace downloader {
@@ -38,6 +39,8 @@ namespace ece643 {
                 std::string ownerGroup() const noexcept;
                 dev_t deviceNumber() const noexcept;
                 std::string filePrefix() const noexcept;
+                const uint8_t *data() const noexcept;
+                std::vector<uint8_t> copy() const noexcept;
         };
     }
 }

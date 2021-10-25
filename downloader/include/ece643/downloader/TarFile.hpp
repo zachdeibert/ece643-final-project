@@ -9,10 +9,12 @@ namespace ece643 {
     namespace downloader {
         class TarFile {
             public:
+                using const_iterator = std::vector<TarEntry *>::const_iterator;
+
                 TarFile(const std::vector<uint8_t> &data) noexcept;
 
-                std::vector<TarEntry *>::const_iterator begin() const noexcept;
-                std::vector<TarEntry *>::const_iterator end() const noexcept;
+                const_iterator begin() const noexcept;
+                const_iterator end() const noexcept;
 
             private:
                 std::vector<uint8_t> data;
