@@ -1,7 +1,9 @@
-#include <fstream>
 #include <iostream>
 #include <stdlib.h>
+#include <vector>
 #include <ece643/downloader/Docker.hpp>
+#include <ece643/downloader/TarEntry.hpp>
+#include <ece643/downloader/TarFile.hpp>
 
 using namespace std;
 using namespace ece643::downloader;
@@ -9,8 +11,9 @@ using namespace ece643::downloader;
 int main(int argc, const char **argv) {
     Docker docker;
     docker.connectUnix();
-    vector<uint8_t> tar = docker.exportImage("ece643-final");
-    ofstream f("test.tar");
-    f.write((char *) tar.data(), tar.size());
+    TarFile tar = docker.exportImage("ece643-final");
+    for (vector<TarEntry *>::const_iterator it = tar.begin(); it != tar.end(); ++it) {
+        cout << (*it)->filename() << endl;
+    }
     return EXIT_SUCCESS;
 }

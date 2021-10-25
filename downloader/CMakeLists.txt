@@ -2,6 +2,8 @@ add_executable(downloader
     src/Curl.cpp
     src/Docker.cpp
     src/main.cpp
+    src/TarEntry.cpp
+    src/TarFile.cpp
 )
 
 target_include_directories(downloader PUBLIC
