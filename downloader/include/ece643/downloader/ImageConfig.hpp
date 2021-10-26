@@ -12,9 +12,7 @@ namespace ece643 {
                 ImageConfig() noexcept = default;
                 ImageConfig(const TarEntry &file) noexcept;
 
-                const std::vector<std::string> &environment() const noexcept;
-                const std::vector<std::string> &entrypoint() const noexcept;
-                const std::vector<std::string> &command() const noexcept;
+                void exec() const noexcept;
 
             private:
                 std::vector<std::string> env;

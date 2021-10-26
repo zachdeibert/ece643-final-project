@@ -1,4 +1,5 @@
 add_executable(downloader
+    src/Container.cpp
     src/Curl.cpp
     src/Docker.cpp
     src/Image.cpp

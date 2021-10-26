@@ -60,23 +60,12 @@ void ImageLayer::extract(const string &prefix) const noexcept {
                     skip = true;
                     break;
                 }
-                string target = (*it)->linkTarget();
-                switch (target.front()) {
-                    case '/':
-                        target = prefix + target;
-                        break;
-                    case '.':
-                        break;
-                    default:
-                        target = prefix + "/" + target;
-                        break;
-                }
                 if ((*it)->type() == TarEntry::HardLink) {
-                    if (link(target.c_str(), filename.c_str()) < 0) {
+                    if (link((*it)->linkTarget().c_str(), filename.c_str()) < 0) {
                         int e = errno;
                         cerr << "link(" << filename << "): " << strerror(e) << endl;
                     }
-                } else if (symlink(target.c_str(), filename.c_str()) < 0) {
+                } else if (symlink((*it)->linkTarget().c_str(), filename.c_str()) < 0) {
                     int e = errno;
                     cerr << "symlink(" << filename << "): " << strerror(e) << endl;
                 }
