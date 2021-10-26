@@ -20,3 +20,6 @@ find_package(RapidJSON REQUIRED)
 target_link_libraries(downloader PUBLIC
     CURL::libcurl
 )
+
+configure_file(src/Launch.sh "${CMAKE_BINARY_DIR}/Launch.sh")
+configure_file(src/Upload.sh "${CMAKE_BINARY_DIR}/Upload.sh")

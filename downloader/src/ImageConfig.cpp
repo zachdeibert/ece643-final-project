@@ -50,20 +50,22 @@ void ImageConfig::exec() const noexcept {
         argvb.emplace_back(it->begin(), it->end() + 1);
     }
     vector<char *> argv;
-    argv.reserve(argvb.size());
+    argv.reserve(argvb.size() + 1);
     for (vector<vector<char>>::iterator it = argvb.begin(); it != argvb.end(); ++it) {
         argv.push_back(it->data());
     }
+    argv.push_back(nullptr);
     vector<vector<char>> envpb;
     envpb.reserve(env.size());
     for (vector<string>::const_iterator it = env.begin(); it != env.end(); ++it) {
         envpb.emplace_back(it->begin(), it->end() + 1);
     }
     vector<char *> envp;
-    envp.reserve(envpb.size());
+    envp.reserve(envpb.size() + 1);
     for (vector<vector<char>>::iterator it = envpb.begin(); it != envpb.end(); ++it) {
         envp.push_back(it->data());
     }
+    envp.push_back(nullptr);
     if (*argv[0] == '/') {
         execvpe(argv[0], argv.data(), envp.data());
         int e = errno;
