@@ -4,3 +4,4 @@ project(ece643-final)
 set(CMAKE_BUILD_TYPE Debug)
 
 add_subdirectory(downloader)
+add_subdirectory(docker)
