@@ -16,6 +16,16 @@ using namespace std;
 using namespace ece643::downloader;
 
 bool Container::enter() noexcept {
+    if (setuid(0) < 0) {
+        int e = errno;
+        cerr << "setuid: " << strerror(e) << endl;
+        return false;
+    }
+    if (setgid(0) < 0) {
+        int e = errno;
+        cerr << "setgid: " << strerror(e) << endl;
+        return false;
+    }
     if (unshare(CLONE_NEWNS) < 0) {
         int e = errno;
         cerr << "unshare: " << strerror(e) << endl;
