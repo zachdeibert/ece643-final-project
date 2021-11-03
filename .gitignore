@@ -2,7 +2,9 @@
 *_dump.txt
 *.BAK.*
 *.qws
+*.rpt
 *.sopcinfo
+*~
 
 .qsys_edit/
 db/

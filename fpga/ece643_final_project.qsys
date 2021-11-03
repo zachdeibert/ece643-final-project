@@ -9,6 +9,14 @@
    categories="System" />
  <parameter name="bonusData"><![CDATA[bonusData 
 {
+   element button_controller
+   {
+      datum _sortIndex
+      {
+         value = "3";
+         type = "int";
+      }
+   }
    element clk
    {
       datum _sortIndex
@@ -17,12 +25,123 @@
          type = "int";
       }
    }
+   element ece643_final_project
+   {
+      datum _originalDeviceFamily
+      {
+         value = "Cyclone V";
+         type = "String";
+      }
+   }
+   element ece643_final_project
+   {
+      datum _originalDeviceFamily
+      {
+         value = "Cyclone V";
+         type = "String";
+      }
+   }
+   element ece643_final_project
+   {
+      datum _originalDeviceFamily
+      {
+         value = "Cyclone V";
+         type = "String";
+      }
+   }
+   element ece643_final_project
+   {
+      datum _originalDeviceFamily
+      {
+         value = "Cyclone V";
+         type = "String";
+      }
+   }
    element hps
    {
       datum _sortIndex
       {
          value = "1";
          type = "int";
+      }
+   }
+   element interrupt_controller
+   {
+      datum _sortIndex
+      {
+         value = "2";
+         type = "int";
+      }
+   }
+   element interrupt_controller.avalon
+   {
+      datum _lockedAddress
+      {
+         value = "1";
+         type = "boolean";
+      }
+      datum baseAddress
+      {
+         value = "2097152";
+         type = "String";
+      }
+   }
+   element led_controller
+   {
+      datum _sortIndex
+      {
+         value = "5";
+         type = "int";
+      }
+   }
+   element led_controller.avalon
+   {
+      datum _lockedAddress
+      {
+         value = "1";
+         type = "boolean";
+      }
+      datum baseAddress
+      {
+         value = "2097184";
+         type = "String";
+      }
+   }
+   element ps2_controller
+   {
+      datum _sortIndex
+      {
+         value = "4";
+         type = "int";
+      }
+   }
+   element ps2_controller.avalon
+   {
+      datum _lockedAddress
+      {
+         value = "1";
+         type = "boolean";
+      }
+      datum baseAddress
+      {
+         value = "2097168";
+         type = "String";
+      }
+   }
+   element vga_controller
+   {
+      datum _sortIndex
+      {
+         value = "6";
+         type = "int";
+      }
+   }
+   element vga_controller.avalon
+   {
+      datum _lockedAddress
+      {
+         value = "1";
+         type = "boolean";
       }
    }
 }
@@ -46,9 +165,36 @@
  <parameter name="timeStamp" value="0" />
  <parameter name="useTestBenchNamingPattern" value="false" />
  <instanceScript></instanceScript>
+ <interface
+   name="buttons"
+   internal="button_controller.buttons"
+   type="conduit"
+   dir="end" />
  <interface name="clk" internal="clk.clk_in" type="clock" dir="end" />
  <interface name="ddr3" internal="hps.memory" type="conduit" dir="end" />
  <interface name="hps_io" internal="hps.hps_io" type="conduit" dir="end" />
+ <interface
+   name="interrupt_controller_0_avalon"
+   internal="interrupt_controller.avalon1" />
+ <interface
+   name="interrupt_controller_0_irq"
+   internal="interrupt_controller.irq1" />
+ <interface
+   name="interrupt_controller_0_reset"
+   internal="interrupt_controller.reset1" />
+ <interface name="leds" internal="led_controller.leds" type="conduit" dir="end" />
+ <interface name="ps2" internal="ps2_controller.ps2" type="conduit" dir="end" />
+ <interface name="sdram" internal="vga_controller.sdram" type="conduit" dir="end" />
+ <interface name="vga" internal="vga_controller.vga" type="conduit" dir="end" />
+ <interface name="vga_controller_0_avalon" internal="vga_controller.avalon1" />
+ <interface name="vga_controller_0_reset" internal="vga_controller.reset1" />
+ <interface name="vga_controller_0_sdram" internal="vga_controller.sdram1" />
+ <interface name="vga_controller_0_vga" internal="vga_controller.vga1" />
+ <module
+   name="button_controller"
+   kind="button_controller"
+   version="1.0"
+   enabled="1" />
  <module name="clk" kind="clock_source" version="20.1" enabled="1">
   <parameter name="clockFrequency" value="50000000" />
   <parameter name="clockFrequencyKnown" value="true" />
@@ -585,7 +731,111 @@
   <parameter name="usb_mp_clk_div" value="0" />
   <parameter name="use_default_mpu_clk" value="true" />
  </module>
+ <module
+   name="interrupt_controller"
+   kind="interrupt_controller"
+   version="1.0"
+   enabled="1" />
+ <module name="led_controller" kind="led_controller" version="1.0" enabled="1" />
+ <module name="ps2_controller" kind="ps2_controller" version="1.0" enabled="1" />
+ <module name="vga_controller" kind="vga_controller" version="1.0" enabled="1" />
+ <connection
+   kind="avalon"
+   version="20.1"
+   start="hps.h2f_axi_master"
+   end="interrupt_controller.avalon">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x00200000" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection
+   kind="avalon"
+   version="20.1"
+   start="hps.h2f_axi_master"
+   end="ps2_controller.avalon">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x00200010" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection
+   kind="avalon"
+   version="20.1"
+   start="hps.h2f_axi_master"
+   end="led_controller.avalon">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x00200020" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection
+   kind="avalon"
+   version="20.1"
+   start="hps.h2f_axi_master"
+   end="vga_controller.avalon">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x0000" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection
+   kind="clock"
+   version="20.1"
+   start="clk.clk"
+   end="interrupt_controller.clk" />
+ <connection
+   kind="clock"
+   version="20.1"
+   start="clk.clk"
+   end="button_controller.clk" />
+ <connection kind="clock" version="20.1" start="clk.clk" end="ps2_controller.clk" />
+ <connection kind="clock" version="20.1" start="clk.clk" end="led_controller.clk" />
+ <connection kind="clock" version="20.1" start="clk.clk" end="vga_controller.clk" />
  <connection kind="clock" version="20.1" start="clk.clk" end="hps.h2f_axi_clock" />
+ <connection
+   kind="conduit"
+   version="20.1"
+   start="interrupt_controller.irq_buttons"
+   end="button_controller.irq">
+  <parameter name="endPort" value="" />
+  <parameter name="endPortLSB" value="0" />
+  <parameter name="startPort" value="" />
+  <parameter name="startPortLSB" value="0" />
+  <parameter name="width" value="0" />
+ </connection>
+ <connection
+   kind="conduit"
+   version="20.1"
+   start="interrupt_controller.irq_ps2"
+   end="ps2_controller.irq">
+  <parameter name="endPort" value="" />
+  <parameter name="endPortLSB" value="0" />
+  <parameter name="startPort" value="" />
+  <parameter name="startPortLSB" value="0" />
+  <parameter name="width" value="0" />
+ </connection>
+ <connection
+   kind="reset"
+   version="20.1"
+   start="clk.clk_reset"
+   end="interrupt_controller.reset" />
+ <connection
+   kind="reset"
+   version="20.1"
+   start="clk.clk_reset"
+   end="button_controller.reset" />
+ <connection
+   kind="reset"
+   version="20.1"
+   start="clk.clk_reset"
+   end="ps2_controller.reset" />
+ <connection
+   kind="reset"
+   version="20.1"
+   start="clk.clk_reset"
+   end="led_controller.reset" />
+ <connection
+   kind="reset"
+   version="20.1"
+   start="clk.clk_reset"
+   end="vga_controller.reset" />
  <connection
    kind="reset"
    version="20.1"
