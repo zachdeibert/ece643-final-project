@@ -6,16 +6,18 @@
 #include <unistd.h>
 #include <vector>
 #include <rapidjson/document.h>
+#include <ece643/downloader/FIFO.hpp>
+#include <ece643/downloader/FIFOStreamAdapter.hpp>
 #include <ece643/downloader/ImageConfig.hpp>
-#include <ece643/downloader/TarEntry.hpp>
 
 using namespace std;
 using namespace rapidjson;
 using namespace ece643::downloader;
 
-ImageConfig::ImageConfig(const TarEntry &file) noexcept {
+ImageConfig::ImageConfig(FIFO<uint8_t> &data) noexcept {
     Document doc;
-    doc.Parse((const char *) file.data(), file.size());
+    FIFOStreamAdapter<uint8_t, char> adapter(data, '\0');
+    doc.ParseStream(adapter);
     Value &config = doc.FindMember("config")->value;
     Value &env = config.FindMember("Env")->value;
     if (env.IsArray()) {

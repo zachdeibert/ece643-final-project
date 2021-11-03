@@ -2,12 +2,12 @@ add_executable(downloader
     src/Container.cpp
     src/Curl.cpp
     src/Docker.cpp
-    src/Image.cpp
+    src/Extractor.cpp
     src/ImageConfig.cpp
-    src/ImageLayer.cpp
+    src/ImageFIFO.cpp
     src/main.cpp
-    src/TarEntry.cpp
-    src/TarFile.cpp
+    src/TarEntryFIFO.cpp
+    src/TarFIFO.cpp
 )
 
 target_include_directories(downloader PUBLIC
@@ -16,9 +16,11 @@ target_include_directories(downloader PUBLIC
 
 find_package(CURL REQUIRED)
 find_package(RapidJSON REQUIRED)
+find_package(Threads REQUIRED)
 
 target_link_libraries(downloader PUBLIC
     CURL::libcurl
+    Threads::Threads
 )
 
 configure_file(src/Launch.sh "${CMAKE_BINARY_DIR}/Launch.sh")
