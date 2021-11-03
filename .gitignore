@@ -1,1 +1,14 @@
+*_description.txt
+*_dump.txt
+*.BAK.*
+*.qws
+*.sopcinfo
+
+.qsys_edit/
+db/
+hps_isw_handoff/
+incremental_db/
+output_files/
+
 /build/
+/fpga/ece643_final_project/
