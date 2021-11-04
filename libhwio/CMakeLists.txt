@@ -1,4 +1,4 @@
-add_library(hwio SHARED
+add_library(hwio STATIC
     src/Accelerometer.cpp
     src/FileDescriptor.cpp
     src/HWIO.cpp

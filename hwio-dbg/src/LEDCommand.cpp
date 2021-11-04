@@ -15,12 +15,24 @@ LEDCommand LEDCommand::instance;
 
 void LEDCommand::run(HWIO &hwio, const vector<string> &args) {
     int count = args.size();
-    int leds;
+    int leds = 0;
+    int hours = 0;
+    int minutes = 0;
+    bool pm = false;
     if(count >= 1) {
         leds = stoi(args[0], nullptr, 2);
     }
+    if (count >= 2) {
+        hours = stoi(args[1]);
+    }
+    if (count >= 3) {
+        minutes = stoi(args[2]);
+    }
+    if (count >= 4) {
+        pm = args[3] == "PM";
+    }
 
-    hwio.led.set(leds, 0, 0, false);
+    hwio.led.set(leds, hours, minutes, pm);
 }
 
 /*
@@ -28,7 +40,7 @@ void LEDCommand::run(HWIO &hwio, const vector<string> &args) {
  * Prints the help message for the LED command.
  */
 void LEDCommand::printHelp() const noexcept {
-    cout << "Usage: led <leds>\n";
+    cout << "Usage: led <leds> <hours> <minutes> <AM|PM>\n";
     cout << "leds: a binary string of length 10, where each bit represents a LED\n";
     cout << "Example: led 10101010\n";
 }
