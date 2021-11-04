@@ -16,7 +16,7 @@ using namespace ece643::libhwio;
 int main(int argc, const char **argv) {
     unique_ptr<HWIO> hwio;
     ExceptionDebugger::printExceptions([&hwio]() {
-        //hwio.reset(new HWIO());
+        hwio.reset(new HWIO());
     });
     cout << "HWIO initialized." << endl;
     vector<string> args;

@@ -34,11 +34,12 @@ uint8_t I2C::read(uint8_t addr) noexcept {
 void I2C::read(uint8_t addr, uint8_t *data, uint8_t len) noexcept {
     i2c_msg msgs[2];
     memset(msgs, 0, sizeof(msgs));
-    msgs[0].addr = addr;
+    msgs[0].addr = this->addr;
     msgs[0].buf = &addr;
     msgs[0].len = 1;
+    msgs[1].addr = this->addr;
     msgs[1].buf = data;
-    msgs[1].flags = I2C_M_RD | I2C_M_NOSTART;
+    msgs[1].flags = I2C_M_RD;
     msgs[1].len = len;
     i2c_rdwr_ioctl_data msgset;
     memset(&msgset, 0, sizeof(msgset));
@@ -48,14 +49,14 @@ void I2C::read(uint8_t addr, uint8_t *data, uint8_t len) noexcept {
 }
 
 void I2C::write(uint8_t addr, uint8_t value) noexcept {
-    i2c_msg msgs[2];
+    uint8_t val[2];
+    val[0] = addr;
+    val[1] = value;
+    i2c_msg msgs[1];
     memset(msgs, 0, sizeof(msgs));
-    msgs[0].addr = addr;
-    msgs[0].buf = &addr;
-    msgs[0].len = 1;
-    msgs[1].buf = &value;
-    msgs[1].flags = I2C_M_NOSTART;
-    msgs[1].len = 1;
+    msgs[0].addr = this->addr;
+    msgs[0].buf = val;
+    msgs[0].len = sizeof(val);
     i2c_rdwr_ioctl_data msgset;
     memset(&msgset, 0, sizeof(msgset));
     msgset.msgs = msgs;

@@ -18,11 +18,13 @@ void AccelCommand::run(HWIO &hwio, const vector<string> &args) {
     if (args.size() >= 1) {
         count = stoi(args[0]);
     }
+    hwio.accelerometer.enable();
     for (int i = 0; i < count; ++i) {
         while (!hwio.accelerometer.ready());
         array<int16_t, 3> data = hwio.accelerometer.read();
         cout << "Accelerometer sample " << i << ": <" << data[0] << ", " << data[1] << ", " << data[2] << ">" << endl;
     }
+    hwio.accelerometer.disable();
 }
 
 AccelCommand::AccelCommand() noexcept : Command("accel") {
