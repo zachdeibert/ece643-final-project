@@ -6,7 +6,7 @@ module led_controller(
         input  wire        write,      //       .write
         input  wire        clk,        //    clk.clk
         input  wire        reset,      //  reset.reset
-        output wire [9:0]  leds,       //   leds.leds
+        output reg  [9:0]  leds,       //   leds.leds
         output wire [6:0]  sevenseg0,  //       .sevenseg0
         output wire [6:0]  sevenseg1,  //       .sevenseg1
         output wire [6:0]  sevenseg2,  //       .sevenseg2
@@ -15,7 +15,18 @@ module led_controller(
         output wire [6:0]  sevenseg5   //       .sevenseg5
     );
 
-    assign leds = 10'b0000000000;
+    always @(posedge clk or posedge reset) begin
+        if (reset)
+            leds <= 0;
+        else if (write) begin
+            if(byteenable[0])
+                leds[7:0] <= writedata[7:0];
+
+            if(byteenable[1])
+                leds[9:8] <= writedata[9:8];
+        end
+    end
+
     assign sevenseg0 = 7'b0000000;
     assign sevenseg1 = 7'b0000000;
     assign sevenseg2 = 7'b0000000;

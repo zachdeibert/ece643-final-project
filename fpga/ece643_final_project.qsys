@@ -278,9 +278,9 @@
   <parameter name="EMAC0_Mode" value="N/A" />
   <parameter name="EMAC0_PTP" value="false" />
   <parameter name="EMAC0_PinMuxing" value="Unused" />
-  <parameter name="EMAC1_Mode" value="RGMII" />
+  <parameter name="EMAC1_Mode" value="N/A" />
   <parameter name="EMAC1_PTP" value="false" />
-  <parameter name="EMAC1_PinMuxing" value="HPS I/O Set 0" />
+  <parameter name="EMAC1_PinMuxing" value="Unused" />
   <parameter name="ENABLE_ABS_RAM_MEM_INIT" value="false" />
   <parameter name="ENABLE_BONDING" value="false" />
   <parameter name="ENABLE_BURST_MERGE" value="false" />
@@ -574,8 +574,8 @@
   <parameter name="S2FINTERRUPT_USB_Enable" value="false" />
   <parameter name="S2FINTERRUPT_WATCHDOG_Enable" value="false" />
   <parameter name="S2F_Width" value="2" />
-  <parameter name="SDIO_Mode" value="4-bit Data" />
-  <parameter name="SDIO_PinMuxing" value="HPS I/O Set 0" />
+  <parameter name="SDIO_Mode" value="N/A" />
+  <parameter name="SDIO_PinMuxing" value="Unused" />
   <parameter name="SEQUENCER_TYPE" value="NIOS" />
   <parameter name="SEQ_MODE" value="0" />
   <parameter name="SKIP_MEM_INIT" value="true" />
