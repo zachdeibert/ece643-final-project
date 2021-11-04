@@ -49,13 +49,8 @@ module interrupt_controller(
             ps2_status <= 1;
         end else begin
             switch_status <= (switch_status | irq_switches) & switch_enable & ~switch_clear;
-            switch_clear <= 0;
-
             button_status <= (button_status | irq_buttons) & button_enable & ~button_clear;
-            button_clear <= 0;
-
             ps2_status <= (ps2_status | irq_ps2) & ps2_enable & ~ps2_clear;
-            ps2_clear <= 0;
         end
     end
 
@@ -96,6 +91,10 @@ module interrupt_controller(
                         ps2_clear <= writedata[24];
                 end
 
+            end else begin
+                switch_clear <= 10'b0;
+                button_clear <= 4'b0;
+                ps2_clear <= 0;
             end
         end
     end
