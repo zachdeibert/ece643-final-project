@@ -11,6 +11,7 @@ namespace ece643 {
         class LEDCommand : public Command {
             public:
                 void run(libhwio::HWIO &hwio, const std::vector<std::string> &args);
+                void printHelp() const noexcept;
 
             private:
                 LEDCommand() noexcept;

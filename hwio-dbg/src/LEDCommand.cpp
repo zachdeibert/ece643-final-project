@@ -23,5 +23,15 @@ void LEDCommand::run(HWIO &hwio, const vector<string> &args) {
     hwio.led.set(leds, 0, 0, false);
 }
 
+/*
+ * LEDCommand::printHelp()
+ * Prints the help message for the LED command.
+ */
+void LEDCommand::printHelp() const noexcept {
+    cout << "Usage: led <leds>\n";
+    cout << "leds: a binary string of length 10, where each bit represents a LED\n";
+    cout << "Example: led 10101010\n";
+}
+
 LEDCommand::LEDCommand() noexcept : Command("led") {
 }
