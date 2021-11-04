@@ -1,5 +1,6 @@
 add_executable(hwio-dbg
     src/AccelCommand.cpp
+    src/LEDCommand.cpp
     src/Command.cpp
     src/ExceptionDebugger.cpp
     src/HelpCommand.cpp
