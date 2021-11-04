@@ -27,6 +27,22 @@ module led_controller(
         end
     end
 
+   /*
+    reg [31:0] clk_cnt = 32'd0;
+
+    always @(posedge clk or posedge reset) begin
+        if (reset)
+            leds <= 0;
+        else begin
+            clk_cnt = clk_cnt + 1;
+            if(clk_cnt == 32'd50000000) begin
+                clk_cnt = 32'd0;
+                leds = ~leds;
+            end
+        end
+    end
+    */
+
     assign sevenseg0 = 7'b0000000;
     assign sevenseg1 = 7'b0000000;
     assign sevenseg2 = 7'b0000000;
