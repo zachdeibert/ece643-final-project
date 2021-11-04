@@ -9,3 +9,5 @@ set(CMAKE_LINKER_FLAGS "${CMAKE_LINKER_FLAGS} -fno-omit-frame-pointer -fsanitize
 
 add_subdirectory(downloader)
 add_subdirectory(docker)
+add_subdirectory(hwio-dbg)
+add_subdirectory(libhwio)
