@@ -263,10 +263,6 @@ set_instance_assignment -name PACKAGE_SKEW_COMPENSATION OFF -to ddr3_mem_reset_n
 set_instance_assignment -name PACKAGE_SKEW_COMPENSATION OFF -to ddr3_mem_ck -tag __hps_sdram_p0
 set_instance_assignment -name PACKAGE_SKEW_COMPENSATION OFF -to ddr3_mem_ck_n -tag __hps_sdram_p0
 
-# Ethernet
-
-# SDIO
-
 # I2C
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to hps_io_hps_io_i2c1_inst_SCL
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to hps_io_hps_io_i2c1_inst_SDA
