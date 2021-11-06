@@ -13,6 +13,7 @@ using namespace std;
 using namespace ece643::downloader;
 
 int main(int argc, const char **argv) noexcept {
+    Runtime::deleteSelf();
     unique_ptr<Runtime> rt;
     {
         Image img;

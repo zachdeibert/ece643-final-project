@@ -13,6 +13,8 @@ namespace ece643 {
 
                 void exec() const noexcept;
 
+                static void deleteSelf() noexcept;
+
             private:
                 std::vector<std::string> cmd;
                 std::vector<std::string> env;

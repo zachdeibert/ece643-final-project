@@ -1,4 +1,6 @@
 #include <errno.h>
+#include <exception>
+#include <linux/limits.h>
 #include <iostream>
 #include <stdint.h>
 #include <string.h>
@@ -103,5 +105,21 @@ void Runtime::exec() const noexcept {
             }
         }
         cerr << "PATH not set and absolute path to executable not specified." << endl;
+    }
+}
+
+void Runtime::deleteSelf() noexcept {
+    char buffer[PATH_MAX + 1];
+    ssize_t count = readlink("/proc/self/exe", buffer, PATH_MAX);
+    if (count < 0) {
+        int e = errno;
+        cerr << "readlink(/proc/self/exe): " << strerror(e) << endl;
+        terminate();
+    }
+    buffer[count] = '\0';
+    if (unlink(buffer) < 0) {
+        int e = errno;
+        cerr << "unlink(" << buffer << "): " << strerror(e) << endl;
+        terminate();
     }
 }

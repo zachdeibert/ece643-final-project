@@ -26,5 +26,4 @@ target_link_libraries(downloader PUBLIC
     Threads::Threads
 )
 
-configure_file(src/Launch.sh "${CMAKE_BINARY_DIR}/Launch.sh")
 configure_file(src/Upload.sh "${CMAKE_BINARY_DIR}/Upload.sh")
