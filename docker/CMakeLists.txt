@@ -6,9 +6,8 @@ file(COPY ${QEMU_ARM} DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 configure_file(Dockerfile Dockerfile)
 configure_file(entrypoint.sh entrypoint.sh)
 
-add_custom_target(docker-image
-    COMMAND docker build -t ece643-final --build-arg qemu_target=${QEMU_ARM_NAME}
-    --build-arg qemu_target_path=${QEMU_ARM} .
+add_custom_target(docker-image ALL
+    COMMAND docker build -t ece643-final .
     DEPENDS Dockerfile entrypoint.sh
     COMMENT "Build Docker Image"
     )
