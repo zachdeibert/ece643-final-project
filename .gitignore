@@ -9,6 +9,7 @@
 .gradle/
 .idea/
 .qsys_edit/
+.vscode/
 db/
 hps_isw_handoff/
 incremental_db/

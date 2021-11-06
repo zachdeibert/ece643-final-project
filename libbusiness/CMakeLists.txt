@@ -3,3 +3,5 @@ add_library(business STATIC
 )
 
 target_include_directories(business PUBLIC include)
+
+target_link_libraries(business PUBLIC hwio-headers)

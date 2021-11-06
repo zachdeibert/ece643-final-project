@@ -5,8 +5,8 @@ using namespace ece643::libbusiness;
 
 extern "C" {
 
-    JNIEXPORT void JNICALL Java_ece643_main_Natives_init(JNIEnv *env, jobject thisObject) {
-        Business b;
+    JNIEXPORT void JNICALL Java_ece643_libbusiness_Business_run(JNIEnv *env, jobject thisObject) {
+        Business().run();
     }
 
 }

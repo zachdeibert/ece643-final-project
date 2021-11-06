@@ -1,6 +1,8 @@
 package ece643.main
 
+import ece643.libbusiness.Business
+
 fun main() {
     println("Hello from main")
-    Natives().init()
+    Business().run()
 }
