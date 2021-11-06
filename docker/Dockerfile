@@ -5,5 +5,6 @@ RUN DEBIAN_FRONTEND="noninteractive" apt-get update -y ;\
     apt-get install -y x11vnc openjdk-17-jre ;\
     rm -rf /var/lib/apt/lists/*
 
-COPY entrypoint.sh /opt/ece643-final-project/
-ENTRYPOINT /opt/ece643-final-project/entrypoint.sh
+ENTRYPOINT /opt/ece643-final-project/bin/main
+COPY bin /opt/ece643-final-project/bin
+COPY lib /opt/ece643-final-project/lib

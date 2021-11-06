@@ -1,0 +1,4 @@
+*
+!@QEMU_ARM_NAME@
+!bin/
+!lib/

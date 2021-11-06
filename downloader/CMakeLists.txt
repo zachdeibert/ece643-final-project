@@ -27,3 +27,5 @@ target_link_libraries(downloader PUBLIC
 )
 
 configure_file(src/Upload.sh "${CMAKE_BINARY_DIR}/Upload.sh")
+
+add_dependencies(downloader docker)

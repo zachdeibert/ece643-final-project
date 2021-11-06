@@ -1,0 +1,29 @@
+application {
+    mainClass = "ece643.sim.MainKt"
+}
+
+jar {
+    manifest {
+        attributes "Main-Class": "ece643.sim.MainKt"
+    }
+}
+
+task copyRuntimeLibs(type: Copy) {
+    group "Distribution"
+    description "Copies runtime classpath into folder so distribution scripts work properly in-tree."
+
+    into "$buildDir/lib"
+    from configurations.runtimeClasspath
+    from jar.archivePath
+    from "$buildDir/../libsim/libsim.so"
+
+    dependsOn jar
+}
+
+assembleDist {
+    dependsOn copyRuntimeLibs
+}
+
+build {
+    dependsOn copyRuntimeLibs
+}

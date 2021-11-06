@@ -1,3 +1,7 @@
+add_library(hwio-headers INTERFACE)
+
+target_include_directories(hwio-headers INTERFACE include)
+
 add_library(hwio STATIC
     src/Accelerometer.cpp
     src/FileDescriptor.cpp
@@ -11,4 +15,4 @@ add_library(hwio STATIC
     src/VGA.cpp
 )
 
-target_include_directories(hwio PUBLIC include)
+target_link_libraries(hwio PUBLIC hwio-headers)

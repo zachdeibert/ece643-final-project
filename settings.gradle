@@ -1,0 +1,4 @@
+rootProject.name = "ECE643 Final Project"
+
+include "main"
+include "sim"

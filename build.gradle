@@ -1,0 +1,28 @@
+buildscript {
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.5.31"
+    }
+
+    repositories {
+        mavenCentral()
+    }
+}
+
+subprojects {
+    apply plugin: "application"
+    apply plugin: "java"
+    apply plugin: "kotlin"
+
+    buildDir = new File(rootProject.buildDir, project.name)
+    group = "ece643"
+    version = "1.0.0"
+
+    java {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
+
+    repositories {
+        mavenCentral()
+    }
+}

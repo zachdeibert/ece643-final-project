@@ -6,6 +6,8 @@
 *.sopcinfo
 *~
 
+.gradle/
+.idea/
 .qsys_edit/
 db/
 hps_isw_handoff/
