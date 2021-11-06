@@ -1,6 +1,7 @@
 #ifndef ECE643_LIBSIM_JAVAENV_HPP
 #define ECE643_LIBSIM_JAVAENV_HPP
 
+#include <stdint.h>
 #include <string>
 #include <unordered_map>
 #include <utility>
@@ -13,7 +14,7 @@ namespace ece643 {
     namespace libsim {
         class JavaEnv {
             public:
-                JavaEnv(JNIEnv *env, jobject hwio) noexcept;
+                JavaEnv(uint8_t id, JNIEnv *env, jobject hwio) noexcept;
 
                 static void create(JNIEnv *env, jobject hwio) noexcept;
 
@@ -29,7 +30,7 @@ namespace ece643 {
             private:
                 static std::vector<JavaEnv> envs;
                 static thread_local JavaEnv *tls;
-                int id;
+                uint8_t id;
                 JNIEnv *env;
                 jobject hwio;
                 std::unordered_map<std::string, std::pair<std::unordered_map<std::string, jmethodID>, jobject>> hwios;

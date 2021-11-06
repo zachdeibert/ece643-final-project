@@ -15,7 +15,7 @@ VGA::VGA(MMap &mmap) noexcept : mmap(&mmap) {
 }
 
 void *VGA::buffer() noexcept {
-    void **buf = (void **) (void *) mmap;
+    void **buf = (void **) (void *) *mmap;
     JavaEnv &j = JavaEnv::get(mmap);
     pair<jobject, jmethodID> m = j.method("VGA", "buffer", "(Ljava/nio/ByteBuffer;)V");
     jobject buffer = j.jni().NewDirectByteBuffer(*buf, maxPacket);

@@ -5,11 +5,11 @@
 using namespace ece643::libhwio;
 using namespace ece643::libsim;
 
-MMap::MMap(uint32_t addr, uint32_t len) noexcept : fd(0) {
+MMap::MMap(uint32_t addr, uint32_t len) noexcept : fd(-1) {
     JavaEnv::init(this);
 }
 
-MMap::MMap(MMap &&move) noexcept : fd(0) {
+MMap::MMap(MMap &&move) noexcept : fd(-1) {
     JavaEnv::init(this);
 }
 

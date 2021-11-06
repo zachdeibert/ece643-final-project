@@ -11,7 +11,6 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <unistd.h>
-#include <vector>
 #include <ece643/downloader/Loop.hpp>
 
 using namespace std;
@@ -87,27 +86,14 @@ void Loop::format(const string &type) const noexcept {
         terminate();
     }
     if (pid == 0) {
-        vector<char> exe("/sbin/mkfs", "/sbin/mkfs" + sizeof("/sbin/mkfs"));
-        vector<char> force("-F", "-F" + sizeof("-F"));
-        vector<char> typeFlag("-t", "-t" + sizeof("-t"));
-        vector<char> vType(type.begin(), type.end() + 1);
-        vector<char> vFile(file.begin(), file.end() + 1);
-        char *const argv[] = {
-            exe.data(),
-            force.data(),
-            typeFlag.data(),
-            vType.data(),
-            vFile.data(),
-            nullptr
-        };
-        execvp(argv[0], argv);
+        execl("/sbin/mkfs", "/sbin/mkfs", "-F", "-t", type.c_str(), file.c_str(), nullptr);
         int e = errno;
-        cerr << "execvp() " << strerror(e) << endl;
+        cerr << "execl() " << strerror(e) << endl;
         terminate();
     }
     if (waitid(P_PID, pid, nullptr, WEXITED) < 0) {
         int e = errno;
-        cerr << "waitpid() " << strerror(e) << endl;
+        cerr << "waitid() " << strerror(e) << endl;
         terminate();
     }
 }

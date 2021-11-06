@@ -5,11 +5,11 @@
 using namespace ece643::libhwio;
 using namespace ece643::libsim;
 
-I2C::I2C(uint8_t addr) noexcept : fd(0) {
+I2C::I2C(uint8_t addr) noexcept : fd(-1) {
     JavaEnv::init(this);
 }
 
-I2C::I2C(I2C &&move) noexcept : fd(0) {
+I2C::I2C(I2C &&move) noexcept : fd(-1) {
     JavaEnv::init(this);
 }
 
@@ -22,11 +22,10 @@ uint8_t I2C::read(uint8_t addr) noexcept {
 }
 
 void I2C::read(uint8_t addr, uint8_t *data, uint8_t len) noexcept {
-    int *id = (int *) data;
-    if (addr == 0) {
-        fd = *id;
+    if (data) {
+        *data = this->addr;
     } else {
-        *id = fd;
+        this->addr = addr;
     }
 }
 

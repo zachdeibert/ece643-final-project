@@ -17,24 +17,25 @@ using namespace ece643::libsim;
 vector<JavaEnv> JavaEnv::envs;
 thread_local JavaEnv *JavaEnv::tls;
 
-JavaEnv::JavaEnv(JNIEnv *env, jobject hwio) noexcept : id(this - &*envs.begin()), env(env), hwio(hwio) {
+JavaEnv::JavaEnv(uint8_t id, JNIEnv *env, jobject hwio) noexcept : id(id), env(env), hwio(hwio) {
+    tls = this;
 }
 
 void JavaEnv::create(JNIEnv *env, jobject hwio) noexcept {
-    tls = &*envs.emplace(envs.end(), env, hwio);
+    envs.emplace_back(envs.size(), env, hwio);
 }
 
 void JavaEnv::init(I2C *i2c) noexcept {
-    i2c->read(0, (uint8_t *) &tls->id, 0);
+    i2c->read(tls->id, nullptr, 0);
 }
 
 void JavaEnv::init(MMap *mmap) noexcept {
-    (*mmap)[0] = (uint32_t) tls->id;
+    (*mmap)[0] = tls->id;
 }
 
 JavaEnv &JavaEnv::get(I2C &i2c) noexcept {
-    int id;
-    i2c.read(1, (uint8_t *) &id, 0);
+    uint8_t id;
+    i2c.read(0, &id, 0);
     return envs[id];
 }
 
