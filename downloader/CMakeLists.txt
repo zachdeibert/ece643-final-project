@@ -7,6 +7,7 @@ add_executable(downloader
     src/HTTP.cpp
     src/Image.cpp
     src/JSON.cpp
+    src/Loop.cpp
     src/main.cpp
     src/Runtime.cpp
     src/Tarball.cpp

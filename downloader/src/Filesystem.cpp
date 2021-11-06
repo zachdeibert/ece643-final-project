@@ -12,11 +12,12 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <ece643/downloader/Filesystem.hpp>
+#include <ece643/downloader/Loop.hpp>
 
 using namespace std;
 using namespace ece643::downloader;
 
-Filesystem::Filesystem() noexcept {
+Filesystem::Filesystem(const string &rootType, const Loop &rootPart) noexcept {
     if (setuid(0) < 0) {
         int e = errno;
         cerr << "setuid: " << strerror(e) << endl;
@@ -42,6 +43,18 @@ Filesystem::Filesystem() noexcept {
         cerr << "chdir: " << strerror(e) << endl;
         terminate();
     }
+    if (umount("/tmp") < 0) {
+        int e = errno;
+        if (e != EINVAL) {
+            cerr << "umount(/tmp): " << strerror(e) << endl;
+            terminate();
+        }
+    }
+    if (mount(rootPart.path().c_str(), "/tmp", rootType.c_str(), 0, nullptr) < 0) {
+        int e = errno;
+        cerr << "mount(/tmp): " << strerror(e) << endl;
+        terminate();
+    }
     stack<string> mounts;
     {
         ifstream ifs("/proc/mounts");
@@ -61,17 +74,12 @@ Filesystem::Filesystem() noexcept {
         }
     }
     while (!mounts.empty()) {
-        if (mounts.top() != "/" && umount(mounts.top().c_str()) < 0) {
+        if (mounts.top() != "/" && mounts.top() != "/tmp" && umount(mounts.top().c_str()) < 0) {
             int e = errno;
             cerr << "umount(" << mounts.top() << "): " << strerror(e) << endl;
             terminate();
         }
         mounts.pop();
-    }
-    if (mount(nullptr, "/tmp", "tmpfs", 0, nullptr) < 0) {
-        int e = errno;
-        cerr << "mount(/tmp): " << strerror(e) << endl;
-        terminate();
     }
     if (mkdir("/tmp/tmp", 0) < 0) {
         int e = errno;

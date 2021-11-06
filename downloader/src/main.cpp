@@ -5,6 +5,7 @@
 #include <ece643/downloader/Extractor.hpp>
 #include <ece643/downloader/Filesystem.hpp>
 #include <ece643/downloader/Image.hpp>
+#include <ece643/downloader/Loop.hpp>
 #include <ece643/downloader/Runtime.hpp>
 #include <ece643/downloader/Tarball.hpp>
 
@@ -21,7 +22,9 @@ int main(int argc, const char **argv) noexcept {
         Container container(docker, "ece643-final");
         rt.reset(new Runtime(container));
         Extractor ext;
-        Filesystem fs;
+        Loop loop("/dev/mmcblk0", 6L * 1024 * 1024 * 1024);
+        loop.format("ext4");
+        Filesystem fs("ext4", loop);
         tar.attach(ext);
         img.run(container);
         fs.setup();
