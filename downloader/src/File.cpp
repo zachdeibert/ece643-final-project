@@ -1,16 +1,14 @@
-#include <algorithm>
-#include <stddef.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
-#include <string>
 #include <sys/types.h>
-#include <ece643/downloader/TarEntryFIFO.hpp>
+#include <vector>
+#include <ece643/downloader/File.hpp>
 
 using namespace std;
 using namespace ece643::downloader;
 
-TarEntryFIFO::TarEntryFIFO(uint8_t *header) noexcept
+File::File(uint8_t *header) noexcept
     : filename((const char *) header, strlen(header, 100))
     , fileMode(octal32(header + 100))
     , ownerUID(octal32(header + 108))
@@ -28,7 +26,7 @@ TarEntryFIFO::TarEntryFIFO(uint8_t *header) noexcept
 {
 }
 
-size_t TarEntryFIFO::strlen(uint8_t *str, size_t max) noexcept {
+size_t File::strlen(uint8_t *str, size_t max) noexcept {
     if (str[max - 1]) {
         return max;
     } else {
@@ -36,7 +34,7 @@ size_t TarEntryFIFO::strlen(uint8_t *str, size_t max) noexcept {
     }
 }
 
-uint32_t TarEntryFIFO::octal32(uint8_t *str) noexcept {
+uint32_t File::octal32(uint8_t *str) noexcept {
     char buf[9];
     memcpy(buf, str, 8);
     buf[8] = '\0';
@@ -45,11 +43,19 @@ uint32_t TarEntryFIFO::octal32(uint8_t *str) noexcept {
     return val;
 }
 
-uint64_t TarEntryFIFO::octal64(uint8_t *str) noexcept {
+uint64_t File::octal64(uint8_t *str) noexcept {
     char buf[13];
     memcpy(buf, str, 12);
     buf[12] = '\0';
     uint64_t val;
     sscanf(buf, "%lo", &val);
     return val;
+}
+
+void File::consume(const vector<uint8_t> &buffer) noexcept {
+    produce(buffer);
+}
+
+void File::detach() noexcept {
+    finish();
 }

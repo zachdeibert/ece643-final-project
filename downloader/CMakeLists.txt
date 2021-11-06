@@ -1,13 +1,15 @@
 add_executable(downloader
     src/Container.cpp
-    src/Curl.cpp
     src/Docker.cpp
     src/Extractor.cpp
-    src/ImageConfig.cpp
-    src/ImageFIFO.cpp
+    src/File.cpp
+    src/Filesystem.cpp
+    src/HTTP.cpp
+    src/Image.cpp
+    src/JSON.cpp
     src/main.cpp
-    src/TarEntryFIFO.cpp
-    src/TarFIFO.cpp
+    src/Runtime.cpp
+    src/Tarball.cpp
 )
 
 target_include_directories(downloader PUBLIC

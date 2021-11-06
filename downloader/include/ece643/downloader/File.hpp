@@ -1,15 +1,20 @@
-#ifndef ECE643_DOWNLOADER_TARENTRYFIFO_HPP
-#define ECE643_DOWNLOADER_TARENTRYFIFO_HPP
+#ifndef ECE643_DOWNLOADER_FILE_HPP
+#define ECE643_DOWNLOADER_FILE_HPP
 
 #include <stddef.h>
 #include <stdint.h>
 #include <string>
 #include <sys/types.h>
-#include <ece643/downloader/FIFO.hpp>
+#include <vector>
+#include <ece643/downloader/Source.hpp>
 
 namespace ece643 {
     namespace downloader {
-        class TarEntryFIFO : public FIFO<uint8_t> {
+        class Tarball;
+
+        class File : public Source<std::vector<uint8_t>> {
+            friend class Tarball;
+
             public:
                 enum Type {
                     Normal = '0',
@@ -24,7 +29,7 @@ namespace ece643 {
                     ExtendedHeader = 'x'
                 };
 
-                TarEntryFIFO(uint8_t *header) noexcept;
+                File(uint8_t *header) noexcept;
 
                 const std::string filename;
                 const mode_t fileMode;
@@ -45,6 +50,8 @@ namespace ece643 {
                 size_t strlen(uint8_t *str, size_t max) noexcept;
                 uint32_t octal32(uint8_t *str) noexcept;
                 uint64_t octal64(uint8_t *str) noexcept;
+                void consume(const std::vector<uint8_t> &buffer) noexcept;
+                void detach() noexcept;
         };
     }
 }

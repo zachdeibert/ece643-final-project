@@ -3,51 +3,45 @@
 #include <stdint.h>
 #include <string.h>
 #include <string>
+#include <thread>
 #include <unistd.h>
 #include <vector>
 #include <rapidjson/document.h>
-#include <ece643/downloader/FIFO.hpp>
-#include <ece643/downloader/FIFOStreamAdapter.hpp>
-#include <ece643/downloader/ImageConfig.hpp>
+#include <ece643/downloader/Container.hpp>
+#include <ece643/downloader/HTTP.hpp>
+#include <ece643/downloader/JSON.hpp>
+#include <ece643/downloader/Runtime.hpp>
 
 using namespace std;
 using namespace rapidjson;
 using namespace ece643::downloader;
 
-ImageConfig::ImageConfig(FIFO<uint8_t> &data) noexcept {
+Runtime::Runtime(Container &container) noexcept {
+    HTTP http;
+    JSON json;
+    http.attach(json);
     Document doc;
-    FIFOStreamAdapter<uint8_t, char> adapter(data, '\0');
-    doc.ParseStream(adapter);
-    Value &config = doc.FindMember("config")->value;
-    Value &env = config.FindMember("Env")->value;
-    if (env.IsArray()) {
-        this->env.reserve(env.Size());
-        for (Value::ConstValueIterator it = env.Begin(); it != env.End(); ++it) {
-            this->env.push_back(it->GetString());
-        }
-    }
-    Value &entry = config.FindMember("Entrypoint")->value;
-    if (entry.IsArray()) {
-        this->entry.reserve(entry.Size());
-        for (Value::ConstValueIterator it = entry.Begin(); it != entry.End(); ++it) {
-            this->entry.push_back(it->GetString());
-        }
-    }
+    thread t([&doc, &json]() {
+        doc.ParseStream(json);
+    });
+    container.docker().run(http, "/containers/" + container.id() + "/json");
+    t.join();
+    Value &config = doc.FindMember("Config")->value;
     Value &cmd = config.FindMember("Cmd")->value;
-    if (cmd.IsArray()) {
-        this->cmd.reserve(cmd.Size());
-        for (Value::ConstValueIterator it = cmd.Begin(); it != cmd.End(); ++it) {
-            this->cmd.push_back(it->GetString());
-        }
+    this->cmd.reserve(cmd.Size());
+    for (Value::ConstValueIterator it = cmd.Begin(); it != cmd.End(); ++it) {
+        this->cmd.push_back(it->GetString());
+    }
+    Value &env = config.FindMember("Env")->value;
+    this->env.reserve(env.Size());
+    for (Value::ConstValueIterator it = env.Begin(); it != env.End(); ++it) {
+        this->env.push_back(it->GetString());
     }
 }
 
-void ImageConfig::exec() const noexcept {
+void Runtime::exec() const noexcept {
     vector<vector<char>> argvb;
-    argvb.reserve(entry.size() + cmd.size());
-    for (vector<string>::const_iterator it = entry.begin(); it != entry.end(); ++it) {
-        argvb.emplace_back(it->begin(), it->end() + 1);
-    }
+    argvb.reserve(cmd.size());
     for (vector<string>::const_iterator it = cmd.begin(); it != cmd.end(); ++it) {
         argvb.emplace_back(it->begin(), it->end() + 1);
     }
