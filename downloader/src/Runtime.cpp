@@ -27,15 +27,32 @@ Runtime::Runtime(Container &container) noexcept {
     container.docker().run(http, "/containers/" + container.id() + "/json");
     t.join();
     Value &config = doc.FindMember("Config")->value;
+    Value &entry = config.FindMember("Entrypoint")->value;
     Value &cmd = config.FindMember("Cmd")->value;
-    this->cmd.reserve(cmd.Size());
-    for (Value::ConstValueIterator it = cmd.Begin(); it != cmd.End(); ++it) {
-        this->cmd.push_back(it->GetString());
+    int size = 0;
+    if (entry.IsArray()) {
+        size += entry.Size();
+    }
+    if (cmd.IsArray()) {
+        size += cmd.Size();
+    }
+    this->cmd.reserve(size);
+    if (entry.IsArray()) {
+        for (Value::ConstValueIterator it = entry.Begin(); it != entry.End(); ++it) {
+            this->cmd.push_back(it->GetString());
+        }
+    }
+    if (cmd.IsArray()) {
+        for (Value::ConstValueIterator it = cmd.Begin(); it != cmd.End(); ++it) {
+            this->cmd.push_back(it->GetString());
+        }
     }
     Value &env = config.FindMember("Env")->value;
-    this->env.reserve(env.Size());
-    for (Value::ConstValueIterator it = env.Begin(); it != env.End(); ++it) {
-        this->env.push_back(it->GetString());
+    if (env.IsArray()) {
+        this->env.reserve(env.Size());
+        for (Value::ConstValueIterator it = env.Begin(); it != env.End(); ++it) {
+            this->env.push_back(it->GetString());
+        }
     }
 }
 
