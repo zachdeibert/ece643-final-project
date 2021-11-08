@@ -8,7 +8,7 @@ using namespace std;
 using namespace ece643::libhwio;
 
 void IPerformSyscalls::check(int ret) noexcept {
-    if (ret == -1) {
+    if (ret < 0) {
         int e = errno;
         cerr << "Syscall returned failure: " << strerror(e) << endl;
         terminate();
@@ -16,5 +16,9 @@ void IPerformSyscalls::check(int ret) noexcept {
 }
 
 void IPerformSyscalls::check(void *ret) noexcept {
-    check((int) (long) ret);
+    if (-1 == (int) (long) ret) {
+        int e = errno;
+        cerr << "Syscall returned failure: " << strerror(e) << endl;
+        terminate();
+    }
 }

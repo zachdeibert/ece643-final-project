@@ -20,7 +20,7 @@ using namespace std::chrono;
 using namespace ece643::libbusiness;
 using namespace ece643::libhwio;
 
-VNCClient::VNCClient(VGA &vga) noexcept : fd(socket(AF_INET, SOCK_STREAM, 0)), vga(vga) {
+VNCClient::VNCClient(VGA &vga) noexcept : fd(socket(AF_INET, SOCK_STREAM, 0)), vga(vga), rectsLeft(0), rectBytesLeft(0) {
     check(fd);
     struct sockaddr_in addr;
     memset(&addr, 0, sizeof(addr));
@@ -56,7 +56,7 @@ VNCClient::VNCClient(VGA &vga) noexcept : fd(socket(AF_INET, SOCK_STREAM, 0)), v
         cerr << "Invalid framebuffer parameters" << endl;
         terminate();
     }
-    check(write(fd, "\x03\0\0\0\0\0\x02\x80\x01\xE0", 10));
+    check(write(fd, "\x03\0\0\0\0\0\x02\x80\x01\xE0", 10) - 10);
 }
 
 void VNCClient::poll(microseconds maxDelay) noexcept {
@@ -72,7 +72,39 @@ void VNCClient::poll(microseconds maxDelay) noexcept {
     timeout.tv_usec = maxDelay.count() % 1000000;
     check(select(1 + (int) fd, &reads, &writes, &excepts, &timeout));
     if (FD_ISSET(((int) fd), &reads)) {
-        check(read(fd, vga.buffer(), VGA::maxPacket));
-        check(write(fd, "\x03\x01\0\0\0\0\x02\x80\x01\xE0", 10));
+        if (rectBytesLeft > 0) {
+            int c = read(fd, buf, rectBytesLeft);
+            check(c - 1);
+            rectBytesLeft -= c;
+            buf += c;
+            if (rectBytesLeft <= 0 && rectsLeft <= 0) {
+                check(write(fd, "\x03\x01\0\0\0\0\x02\x80\x01\xE0", 10) - 10);
+            }
+        } else if (rectsLeft > 0) {
+            uint8_t header[8];
+            check(read(fd, header, 8) - 8);
+            int width = ((header[4] << 8) | header[5]);
+            int height = ((header[6] << 8) | header[7]);
+            rectBytesLeft = width * height * 4 + 4;
+            if (rectBytesLeft + 8 > VGA::maxPacket) {
+                cerr << "Packet size is larger than VGA buffer!" << endl;
+                terminate();
+            }
+            buf = (uint8_t *) vga.buffer();
+            memcpy(buf, header, 8);
+            buf += 8;
+            --rectsLeft;
+        } else {
+            uint8_t header[4];
+            check(read(fd, header, 4) - 4);
+            switch (header[0]) {
+                case 0:
+                    rectsLeft = ((header[2] << 8) | header[3]);
+                    break;
+                default:
+                    cerr << "Warning: invalid message type '" << (int) header[0] << "'." << endl;
+                    break;
+            }
+        }
     }
 }
