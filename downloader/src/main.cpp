@@ -23,7 +23,7 @@ int main(int argc, const char **argv) noexcept {
         Container container(docker, "ece643-final");
         rt.reset(new Runtime(container));
         Extractor ext;
-        Loop loop("/dev/mmcblk0", 6LL * 1024 * 1024 * 1024);
+        Loop loop("/dev/mmcblk0", 8LL * 1024 * 1024 * 1024);
         loop.format("ext4");
         Filesystem fs("ext4", loop);
         tar.attach(ext);
