@@ -10,6 +10,10 @@
 .idea/
 .qsys_edit/
 .vscode/
+.settings/
+.project
+bin/
+
 db/
 hps_isw_handoff/
 incremental_db/
