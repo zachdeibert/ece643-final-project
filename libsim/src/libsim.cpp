@@ -9,13 +9,15 @@ using namespace ece643::libsim;
 
 extern "C" {
 
-    JNIEXPORT void JNICALL Java_ece643_libbusiness_SimBusiness_run(JNIEnv *env, jobject thisObject, jobject hwio) {
+    JNIEXPORT void JNICALL Java_ece643_libbusiness_SimBusiness_run(JNIEnv *env, jobject thisObject, jobject hwio, jobject setup) {
         unsetenv("LD_PRELOAD");
         JavaEnv::create(env, hwio);
 #ifdef DEBUG_ATTACH_GDB
         raise(SIGSTOP);
 #endif
-        Business().run();
+        Business business;
+        env->CallVoidMethod(setup, env->GetMethodID(env->GetObjectClass(setup), "run", "()V"));
+        business.run();
     }
 
 }

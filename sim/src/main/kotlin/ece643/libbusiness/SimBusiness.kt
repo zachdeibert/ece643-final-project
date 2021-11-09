@@ -8,5 +8,5 @@ class SimBusiness {
         System.load(File(File(SimBusiness::class.java.protectionDomain.codeSource.location.toURI()).parentFile, "libsim.so").absolutePath)
     }
 
-    external fun run(hwio: HWIO)
+    external fun run(hwio: HWIO, setup: Runnable)
 }

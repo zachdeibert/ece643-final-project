@@ -7,5 +7,5 @@ class Business {
         System.load(File(File(Business::class.java.protectionDomain.codeSource.location.toURI()).parentFile, "libmain.so").absolutePath)
     }
 
-    external fun run()
+    external fun run(setup: Runnable)
 }

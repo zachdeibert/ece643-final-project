@@ -60,6 +60,7 @@ class SimWindow : JFrame() {
             layout.putConstraint(VERTICAL_CENTER, sevenseg, 0, VERTICAL_CENTER, leds[9])
             layout.putConstraint(EAST, sevenseg, 0, EAST, buttons[13])
         }
+        setLocationRelativeTo(null)
         isVisible = true
         toFront()
         requestFocus()
