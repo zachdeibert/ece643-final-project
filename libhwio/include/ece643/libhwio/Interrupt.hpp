@@ -10,9 +10,9 @@ namespace ece643 {
             public:
                 Interrupt(MMap &mmap) noexcept;
 
-                void enable(uint32_t mask) noexcept;
-                void disable(uint32_t mask) noexcept;
-                uint32_t poll(uint32_t mask) noexcept;
+                void enable(uint32_t mask);
+                void disable(uint32_t mask);
+                uint32_t poll(uint32_t mask);
 
             private:
                 uint32_t mask;

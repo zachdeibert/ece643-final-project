@@ -8,10 +8,10 @@ namespace ece643 {
     namespace libbusiness {
         class ButtonHandler {
             public:
-                ButtonHandler(libhwio::Interrupt &irq) noexcept;
-                ~ButtonHandler() noexcept;
+                ButtonHandler(libhwio::Interrupt &irq);
+                ~ButtonHandler() noexcept(false);
 
-                bool poll() noexcept;
+                bool poll();
 
             private:
                 libhwio::Interrupt &irq;

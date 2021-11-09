@@ -5,10 +5,13 @@ using namespace std;
 using namespace std::chrono;
 using namespace ece643::libbusiness;
 
-Business::Business() noexcept : buttons(hwio.interrupt), vncClient(hwio.vga) {
+Business::Business() : buttons(hwio.interrupt), vncClient(hwio.vga) {
 }
 
-void Business::run() noexcept {
+Business::~Business() noexcept(false) {
+}
+
+void Business::run() {
     hwio.interrupt.enable(0x000003FF);
     int counter = 0;
     int switches = 0;

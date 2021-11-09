@@ -59,7 +59,7 @@ VNCClient::VNCClient(VGA &vga) noexcept : fd(socket(AF_INET, SOCK_STREAM, 0)), v
     check(write(fd, "\x03\0\0\0\0\0\x02\x80\x01\xE0", 10) - 10);
 }
 
-void VNCClient::poll(microseconds maxDelay) noexcept {
+void VNCClient::poll(microseconds maxDelay) {
     fd_set reads;
     fd_set writes;
     fd_set excepts;

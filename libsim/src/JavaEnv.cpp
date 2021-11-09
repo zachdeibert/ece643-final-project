@@ -8,10 +8,12 @@
 #include <jni.h>
 #include <ece643/libhwio/I2C.hpp>
 #include <ece643/libhwio/MMap.hpp>
+#include <ece643/libinterop/JavaException.hpp>
 #include <ece643/libsim/JavaEnv.hpp>
 
 using namespace std;
 using namespace ece643::libhwio;
+using namespace ece643::libinterop;
 using namespace ece643::libsim;
 
 vector<JavaEnv> JavaEnv::envs;
@@ -64,4 +66,10 @@ pair<jobject, jmethodID> JavaEnv::method(string object, string method, string si
         m = obj->second.first.emplace_hint(m, mangled, env->GetMethodID(cls, method.c_str(), signature.c_str()));
     }
     return make_pair(obj->second.second, m->second);
+}
+
+void JavaEnv::postCall() {
+    if (env->ExceptionCheck()) {
+        throw JavaException();
+    }
 }

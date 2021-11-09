@@ -23,25 +23,29 @@ Accelerometer &Accelerometer::operator =(Accelerometer &&move) noexcept {
     return *this;
 }
 
-void Accelerometer::enable() noexcept {
+void Accelerometer::enable() {
     JavaEnv &j = JavaEnv::get(i2c);
     pair<jobject, jmethodID> m = j.method("Accelerometer", "enable", "()V");
     j.jni().CallVoidMethod(m.first, m.second);
+    j.postCall();
 }
 
-void Accelerometer::disable() noexcept {
+void Accelerometer::disable() {
     JavaEnv &j = JavaEnv::get(i2c);
     pair<jobject, jmethodID> m = j.method("Accelerometer", "disable", "()V");
     j.jni().CallVoidMethod(m.first, m.second);
+    j.postCall();
 }
 
-bool Accelerometer::ready() noexcept {
+bool Accelerometer::ready() {
     JavaEnv &j = JavaEnv::get(i2c);
     pair<jobject, jmethodID> m = j.method("Accelerometer", "ready", "()Z");
-    return j.jni().CallBooleanMethod(m.first, m.second);
+    bool val = j.jni().CallBooleanMethod(m.first, m.second);
+    j.postCall();
+    return val;
 }
 
-array<int16_t, 3> Accelerometer::read() noexcept {
+array<int16_t, 3> Accelerometer::read() {
     JavaEnv &j = JavaEnv::get(i2c);
     pair<jobject, jmethodID> m = j.method("Accelerometer", "read", "()[S");
     jshortArray arr = (jshortArray) j.jni().CallObjectMethod(m.first, m.second);
@@ -51,5 +55,6 @@ array<int16_t, 3> Accelerometer::read() noexcept {
     ret[1] = data[1];
     ret[2] = data[2];
     j.jni().ReleaseShortArrayElements(arr, data, 0);
+    j.postCall();
     return ret;
 }

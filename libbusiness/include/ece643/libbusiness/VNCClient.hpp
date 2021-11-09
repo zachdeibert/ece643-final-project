@@ -13,7 +13,7 @@ namespace ece643 {
             public:
                 VNCClient(libhwio::VGA &vga) noexcept;
 
-                void poll(std::chrono::microseconds maxDelay) noexcept;
+                void poll(std::chrono::microseconds maxDelay);
 
             private:
                 libhwio::FileDescriptor fd;

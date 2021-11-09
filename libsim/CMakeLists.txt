@@ -23,5 +23,6 @@ target_include_directories(sim PUBLIC
 target_link_libraries(sim PUBLIC
     business
     hwio-headers
+    interop
     ${JNI_LIBRARIES}
 )

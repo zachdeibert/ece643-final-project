@@ -12,44 +12,26 @@ class Accelerometer(private val view: AccelerometerView) {
     private var nextTime = 0.toLong()
 
     fun enable() {
-        try {
-            enabled = true
-            nextTime = System.currentTimeMillis() + PERIOD
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
+        enabled = true
+        nextTime = System.currentTimeMillis() + PERIOD
     }
 
     fun disable() {
-        try {
-            enabled = false
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
+        enabled = false
     }
 
     fun ready(): Boolean {
-        try {
-            if (!enabled) {
-                throw RuntimeException("Tried to read when accelerometer is not enabled")
-            }
-            return System.currentTimeMillis() >= nextTime
-        } catch (e: Exception) {
-            e.printStackTrace()
+        if (!enabled) {
+            throw RuntimeException("Tried to read when accelerometer is not enabled")
         }
-        return false
+        return System.currentTimeMillis() >= nextTime
     }
 
     fun read(): Array<Short> {
-        try {
-            if (!ready()) {
-                throw RuntimeException("Tried to read when accelerometer is not ready")
-            }
-            nextTime += PERIOD
-            return view.values
-        } catch (e: Exception) {
-            e.printStackTrace()
+        if (!ready()) {
+            throw RuntimeException("Tried to read when accelerometer is not ready")
         }
-        return arrayOf(0, 0, 0)
+        nextTime += PERIOD
+        return view.values
     }
 }

@@ -9,7 +9,7 @@ using namespace ece643::libhwio;
 VGA::VGA(MMap &mmap) noexcept : mmap(&mmap) {
 }
 
-void *VGA::buffer() noexcept {
+void *VGA::buffer() {
     return *mmap + 0x000000;
 }
 

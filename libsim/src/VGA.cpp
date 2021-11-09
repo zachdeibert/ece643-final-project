@@ -14,13 +14,14 @@ VGA::VGA(MMap &mmap) noexcept : mmap(&mmap) {
     *buf = new uint8_t[maxPacket];
 }
 
-void *VGA::buffer() noexcept {
+void *VGA::buffer() {
     void **buf = (void **) (void *) *mmap;
     JavaEnv &j = JavaEnv::get(mmap);
     pair<jobject, jmethodID> m = j.method("VGA", "buffer", "(Ljava/nio/ByteBuffer;)V");
     jobject buffer = j.jni().NewDirectByteBuffer(*buf, maxPacket);
     j.jni().CallVoidMethod(m.first, m.second, buffer);
     j.jni().DeleteLocalRef(buffer);
+    j.postCall();
     return *buf;
 }
 
@@ -30,4 +31,5 @@ void VGA::write(int x, int y, int width, int height, void *data) {
     jobject buf = j.jni().NewDirectByteBuffer(data, width * height * 4);
     j.jni().CallVoidMethod(m.first, m.second, x, y, width, height, buf);
     j.jni().DeleteLocalRef(buf);
+    j.postCall();
 }

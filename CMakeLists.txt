@@ -14,9 +14,10 @@ add_subdirectory(downloader)
 add_subdirectory(docker)
 add_subdirectory(hwio-dbg)
 add_subdirectory(libbusiness)
+add_subdirectory(libhwio)
+add_subdirectory(libinterop)
 add_subdirectory(libmain)
 add_subdirectory(libsim)
-add_subdirectory(libhwio)
 
 add_custom_target(gradle ALL
     COMMAND ./gradlew "-Dorg.gradle.project.buildDir=${CMAKE_CURRENT_BINARY_DIR}" build

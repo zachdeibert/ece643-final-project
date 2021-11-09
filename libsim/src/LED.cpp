@@ -15,4 +15,5 @@ void LED::set(int leds, int hours, int minutes, bool pm) {
     JavaEnv &j = JavaEnv::get(mmap);
     pair<jobject, jmethodID> m = j.method("LED", "set", "(IIIZ)V");
     j.jni().CallVoidMethod(m.first, m.second, leds, hours, minutes, pm);
+    j.postCall();
 }

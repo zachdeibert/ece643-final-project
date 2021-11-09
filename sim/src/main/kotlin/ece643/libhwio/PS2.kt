@@ -52,11 +52,6 @@ class PS2(private val view: PS2View) {
     }
 
     fun poll(): Array<Byte> {
-        try {
-            return values.toTypedArray()
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-        return arrayOf()
+        return values.toTypedArray()
     }
 }

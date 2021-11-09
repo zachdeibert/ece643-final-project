@@ -8,15 +8,15 @@ using namespace std::chrono;
 using namespace ece643::libbusiness;
 using namespace ece643::libhwio;
 
-ButtonHandler::ButtonHandler(Interrupt &irq) noexcept : irq(irq) {
+ButtonHandler::ButtonHandler(Interrupt &irq) : irq(irq) {
     irq.enable(0x000F0000);
 }
 
-ButtonHandler::~ButtonHandler() noexcept {
+ButtonHandler::~ButtonHandler() noexcept(false) {
     irq.disable(0x000F0000);
 }
 
-bool ButtonHandler::poll() noexcept {
+bool ButtonHandler::poll() {
     steady_clock::time_point now = steady_clock::now();
     int buttons = irq.poll(0x000F0000);
     if (buttons & 0x00010000) {

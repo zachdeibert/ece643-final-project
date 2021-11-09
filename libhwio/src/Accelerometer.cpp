@@ -25,19 +25,19 @@ Accelerometer &Accelerometer::operator =(Accelerometer &&move) noexcept {
     return *this;
 }
 
-void Accelerometer::enable() noexcept {
+void Accelerometer::enable() {
     i2c.write(0x2D, 0x08);
 }
 
-void Accelerometer::disable() noexcept {
+void Accelerometer::disable() {
     i2c.write(0x2D, 0x00);
 }
 
-bool Accelerometer::ready() noexcept {
+bool Accelerometer::ready() {
     return i2c.read(0x30) & 0x80;
 }
 
-array<int16_t, 3> Accelerometer::read() noexcept {
+array<int16_t, 3> Accelerometer::read() {
     uint8_t buffer[6];
     i2c.read(0x32, buffer, sizeof(buffer));
     array<int16_t, 3> data;

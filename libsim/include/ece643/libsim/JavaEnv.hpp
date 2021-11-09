@@ -27,6 +27,8 @@ namespace ece643 {
                 JNIEnv &jni() noexcept;
                 std::pair<jobject, jmethodID> method(std::string object, std::string method, std::string signature) noexcept;
 
+                void postCall();
+
             private:
                 static std::vector<JavaEnv> envs;
                 static thread_local JavaEnv *tls;

@@ -13,7 +13,7 @@ namespace ece643 {
 
                 PS2(MMap &mmap) noexcept;
 
-                std::string poll() noexcept;
+                std::string poll();
 
             private:
                 MMap *mmap;

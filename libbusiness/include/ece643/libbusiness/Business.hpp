@@ -10,9 +10,10 @@ namespace ece643 {
     namespace libbusiness {
         class Business {
             public:
-                Business() noexcept;
+                Business();
+                ~Business() noexcept(false);
 
-                void run() noexcept;
+                void run();
 
             private:
                 libhwio::HWIO hwio;

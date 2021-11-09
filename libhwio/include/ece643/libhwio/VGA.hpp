@@ -14,7 +14,7 @@ namespace ece643 {
 
                 VGA(MMap &mmap) noexcept;
 
-                void *buffer() noexcept;
+                void *buffer();
                 void write(int x, int y, int width, int height, void *data);
 
             private:

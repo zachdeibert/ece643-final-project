@@ -17,10 +17,10 @@ namespace ece643 {
 
                 Accelerometer &operator =(Accelerometer &&move) noexcept;
 
-                void enable() noexcept;
-                void disable() noexcept;
-                bool ready() noexcept;
-                std::array<int16_t, 3> read() noexcept;
+                void enable();
+                void disable();
+                bool ready();
+                std::array<int16_t, 3> read();
 
             private:
                 I2C i2c;

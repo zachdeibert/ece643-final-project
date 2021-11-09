@@ -5,11 +5,15 @@ import ece643.libhwio.HWIO
 import ece643.main.MinecraftLauncher
 
 fun main() {
-    val win = SimWindow()
+    var win: SimWindow? = null
     var mc: MinecraftLauncher? = null
-    SimBusiness().run(HWIO(win)) {
-        mc = MinecraftLauncher()
+    try {
+        win = SimWindow()
+        SimBusiness().run(HWIO(win)) {
+            mc = MinecraftLauncher()
+        }
+    } finally {
+        mc?.close()
+        win?.dispose()
     }
-    mc?.close()
-    win.dispose()
 }
