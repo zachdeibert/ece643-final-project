@@ -8,10 +8,10 @@ module led_controller(
         input  wire        reset,      //  reset.reset
         output reg  [9:0]  leds,       //   leds.leds
         output wire [6:0]  sevenseg0,  //       .sevenseg0
-        output wire [6:0]  sevenseg1,  //       .sevenseg1
+        output reg  [6:0]  sevenseg1,  //       .sevenseg1
         output wire [6:0]  sevenseg2,  //       .sevenseg2
         output wire [6:0]  sevenseg3,  //       .sevenseg3
-        output reg  [6:0]  sevenseg4,  //       .sevenseg4
+        output wire [6:0]  sevenseg4,  //       .sevenseg4
         output wire [6:0]  sevenseg5   //       .sevenseg5
     );
 
@@ -20,10 +20,10 @@ module led_controller(
     reg [3:0] minuteTens;
     reg [3:0] minuteOnes;
 
-    seven_segment ss0(.in(hourTens), .out(sevenseg0));
-    seven_segment ss1(.in(hourOnes), .out(sevenseg1));
-    seven_segment ss2(.in(minuteTens), .out(sevenseg2));
-    seven_segment ss3(.in(minuteOnes), .out(sevenseg3));
+    seven_segment ss5(.in(hourTens), .out(sevenseg5));
+    seven_segment ss4(.in(hourOnes), .out(sevenseg4));
+    seven_segment ss3(.in(minuteTens), .out(sevenseg3));
+    seven_segment ss2(.in(minuteOnes), .out(sevenseg2));
 
     always @(posedge clk or posedge reset) begin
         if (reset)
@@ -44,14 +44,14 @@ module led_controller(
                 hourOnes <= writedata[27:24] % 10;
                 hourTens <= writedata[27:24] / 10;
                 if (writedata[28]) begin
-                    sevenseg4 <= 7'b0001000;
+                    sevenseg1 <= 7'b0001100;
                 end else begin
-                    sevenseg4 <= 7'b0011000;
+                    sevenseg1 <= 7'b0001000;
                 end
             end
         end
     end
 
-    assign sevenseg5 = 7'b0001001;
+    assign sevenseg0 = 7'b0101011;
 
 endmodule

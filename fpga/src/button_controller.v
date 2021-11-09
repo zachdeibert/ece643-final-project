@@ -11,14 +11,15 @@ module button_controller(
 
     assign irq_buttons = (reset)? 4'd0: ~buttons;
 
-    reg [9:0] last_switch = 10'b0;
+    reg [9:0] last_switch;
 
     integer i;
 
     always @(posedge clk or posedge reset) begin
-        if(reset)
+        if(reset) begin
             irq_switches <= 10'b0;
-        else begin
+            last_switch <= switches;
+        end else begin
             for(i = 0; i < 10; i = i + 1) begin
                 if(last_switch[i] != switches[i])
                     irq_switches[i] <= 1;

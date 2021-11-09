@@ -39,5 +39,5 @@ void IRQCommand::run(HWIO &hwio, const vector<string> &args) {
     }
 }
 
-IRQCommand::IRQCommand() noexcept : Command("ps2") {
+IRQCommand::IRQCommand() noexcept : Command("irq") {
 }
