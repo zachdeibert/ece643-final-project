@@ -5,7 +5,7 @@ import java.awt.event.WindowAdapter
 import java.awt.event.WindowEvent
 import javax.swing.JFrame
 
-class Interrupt(window: JFrame, buttons: Array<Button>) {
+class Interrupt(window: JFrame, buttons: Array<Button>, private val ps2: PS2) {
     private var enableMask = 0
     private var activeMask = 0
 
@@ -41,6 +41,9 @@ class Interrupt(window: JFrame, buttons: Array<Button>) {
 
     fun poll(mask: Int): Int {
         try {
+            if (ps2.ready()) {
+                activeMask = activeMask.or(enableMask.and(0x01000000))
+            }
             val match = activeMask.and(mask)
             activeMask = activeMask.and(match.inv())
             return match

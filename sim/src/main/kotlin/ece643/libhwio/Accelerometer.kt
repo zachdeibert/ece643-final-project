@@ -1,21 +1,55 @@
 package ece643.libhwio
 
-class Accelerometer {
+import ece643.sim.AccelerometerView
+import java.lang.RuntimeException
+
+class Accelerometer(private val view: AccelerometerView) {
+    companion object {
+        private const val PERIOD = 20
+    }
+
+    private var enabled = false
+    private var nextTime = 0.toLong()
+
     fun enable() {
-        println("Accelerometer::enable()")
+        try {
+            enabled = true
+            nextTime = System.currentTimeMillis() + PERIOD
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     fun disable() {
-        println("Accelerometer::disable()")
+        try {
+            enabled = false
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     fun ready(): Boolean {
-        println("Accelerometer::ready()")
+        try {
+            if (!enabled) {
+                throw RuntimeException("Tried to read when accelerometer is not enabled")
+            }
+            return System.currentTimeMillis() >= nextTime
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
         return false
     }
 
     fun read(): Array<Short> {
-        println("Accelerometer::read()")
+        try {
+            if (!ready()) {
+                throw RuntimeException("Tried to read when accelerometer is not ready")
+            }
+            nextTime += PERIOD
+            return view.values
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
         return arrayOf(0, 0, 0)
     }
 }
