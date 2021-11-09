@@ -17,13 +17,14 @@ class SimWindow : JFrame() {
     val vga = VGAView()
     val leds = Array(10) { _ -> LEDView() }
     val sevenseg = SevenSegView()
+    val buttons = Array(14) { _ -> Button() }
 
     init {
         title = "ECE643 Final Project Simulator"
         size = Dimension(640, 580)
         minimumSize = size
         preferredSize = size
-        defaultCloseOperation = EXIT_ON_CLOSE
+        defaultCloseOperation = DO_NOTHING_ON_CLOSE
         contentPane.apply {
             val layout = SpringLayout()
             setLayout(layout)
@@ -41,9 +42,23 @@ class SimWindow : JFrame() {
                 layout.putConstraint(WEST, leds[i], 10, EAST, leds[i - 1])
             }
 
+            for (i in 0 until 10) {
+                add(buttons[i])
+                layout.putConstraint(NORTH, buttons[i], 10, SOUTH, leds[i])
+                layout.putConstraint(HORIZONTAL_CENTER, buttons[i], 0, HORIZONTAL_CENTER, leds[i])
+            }
+            add(buttons[10])
+            layout.putConstraint(VERTICAL_CENTER, buttons[10], 0, VERTICAL_CENTER, buttons[9])
+            layout.putConstraint(WEST, buttons[10], 45, EAST, buttons[9])
+            for (i in 11 until 14) {
+                add(buttons[i])
+                layout.putConstraint(VERTICAL_CENTER, buttons[i], 0, VERTICAL_CENTER, buttons[i - 1])
+                layout.putConstraint(WEST, buttons[i], 10, EAST, buttons[i - 1])
+            }
+
             add(sevenseg)
             layout.putConstraint(VERTICAL_CENTER, sevenseg, 0, VERTICAL_CENTER, leds[9])
-            layout.putConstraint(WEST, sevenseg, 10, EAST, leds[9])
+            layout.putConstraint(EAST, sevenseg, 0, EAST, buttons[13])
         }
         isVisible = true
         toFront()

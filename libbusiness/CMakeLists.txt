@@ -1,5 +1,6 @@
 add_library(business STATIC
     src/Business.cpp
+    src/ButtonHandler.cpp
     src/VNCClient.cpp
     src/VNCServer.cpp
 )
