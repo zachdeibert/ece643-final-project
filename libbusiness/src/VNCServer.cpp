@@ -13,7 +13,7 @@ using namespace ece643::libbusiness;
 VNCServer::VNCServer() noexcept {
     check(server = fork());
     if (server == 0) {
-        check(execl("/usr/bin/Xvnc", "/usr/bin/Xvnc", "-geometry", "640x480", "-depth", "32", "-pixelformat", "RGB888", "-securitytypes", "None", ":0", nullptr));
+        check(execl("/usr/bin/Xvnc", "/usr/bin/Xvnc", "-geometry", "640x480", "-depth", "32", "-pixelformat", "RGB888", "-securitytypes", "None", ":1", nullptr));
         terminate();
     }
 }
