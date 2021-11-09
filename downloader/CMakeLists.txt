@@ -11,6 +11,7 @@ add_executable(downloader
     src/main.cpp
     src/Runtime.cpp
     src/Tarball.cpp
+    src/Thread.cpp
 )
 
 target_include_directories(downloader PUBLIC

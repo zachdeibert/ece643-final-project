@@ -5,7 +5,6 @@
 #include <stdint.h>
 #include <string.h>
 #include <string>
-#include <thread>
 #include <unistd.h>
 #include <vector>
 #include <rapidjson/document.h>
@@ -13,6 +12,7 @@
 #include <ece643/downloader/HTTP.hpp>
 #include <ece643/downloader/JSON.hpp>
 #include <ece643/downloader/Runtime.hpp>
+#include <ece643/downloader/Thread.hpp>
 
 using namespace std;
 using namespace rapidjson;
@@ -23,7 +23,7 @@ Runtime::Runtime(Container &container) noexcept {
     JSON json;
     http.attach(json);
     Document doc;
-    thread t([&doc, &json]() {
+    Thread t([&doc, &json]() {
         doc.ParseStream(json);
     });
     container.docker().run(http, "/containers/" + container.id() + "/json");

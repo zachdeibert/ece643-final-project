@@ -1,10 +1,10 @@
 #include <string>
-#include <thread>
 #include <rapidjson/document.h>
 #include <ece643/downloader/Container.hpp>
 #include <ece643/downloader/Docker.hpp>
 #include <ece643/downloader/HTTP.hpp>
 #include <ece643/downloader/JSON.hpp>
+#include <ece643/downloader/Thread.hpp>
 
 using namespace std;
 using namespace rapidjson;
@@ -15,7 +15,7 @@ Container::Container(Docker &docker, const string &image) noexcept : mdocker(doc
     JSON json;
     http.attach(json);
     Document doc;
-    thread t([&doc, &json]() {
+    Thread t([&doc, &json]() {
         doc.ParseStream(json);
     });
     docker.run(http, "/containers/create", "POST", "{\"Image\":\"" + image + "\"}");
