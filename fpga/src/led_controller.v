@@ -44,14 +44,14 @@ module led_controller(
                 hourOnes <= writedata[27:24] % 10;
                 hourTens <= writedata[27:24] / 10;
                 if (writedata[28]) begin
-                    sevenseg1 <= 7'b0001000;
+                    sevenseg1 <= 7'b0001100;
                 end else begin
-                    sevenseg1 <= 7'b0011000;
+                    sevenseg1 <= 7'b0001000;
                 end
             end
         end
     end
 
-    assign sevenseg0 = 7'b0001001;
+    assign sevenseg0 = 7'b0101011;
 
 endmodule

@@ -30,14 +30,39 @@ module interrupt_controller(
         if(reset)
             readdata <= 32'b0;
         else begin
-            if(address == 2'b01)
+            if(address == 2'b00)
                 readdata <= switch_status | (button_status << 16) | (ps2_status << 24);
-            else if(address == 2'b10)
+            else if(address == 2'b01)
                 readdata <= switch_enable | (button_enable << 16) | (ps2_enable << 24);
-            else if(address == 2'b11)
+            else if(address == 2'b10)
                 readdata <= switch_clear | (button_clear << 16) | (ps2_clear << 24);
             else
                 readdata <= 32'b0;
+        end
+    end
+
+    reg [9:0] switch_last;
+    reg [3:0] button_last;
+    reg ps2_last;
+
+    wire [9:0] switch_edge;
+    wire [3:0] button_edge;
+    wire ps2_edge;
+
+    assign switch_edge = ~switch_last & irq_switches;
+    assign button_edge = ~button_last & irq_buttons;
+    assign ps2_edge = ~ps2_last & irq_ps2;
+
+    // Save last state of irq_switches, irq_buttons, and ps2_irq
+    always @(posedge clk or posedge reset) begin
+        if(reset) begin
+            switch_last <= 'b0;
+            button_last <= 'b0;
+            ps2_last <= 'b0;
+        end else begin
+            switch_last <= irq_switches;
+            button_last <= irq_buttons;
+            ps2_last <= irq_ps2;
         end
     end
 
@@ -46,11 +71,11 @@ module interrupt_controller(
         if(reset) begin
             switch_status <= 10'b0;
             button_status <= 4'b0;
-            ps2_status <= 1;
+            ps2_status <= 0;
         end else begin
-            switch_status <= (switch_status | irq_switches) & switch_enable & ~switch_clear;
-            button_status <= (button_status | irq_buttons) & button_enable & ~button_clear;
-            ps2_status <= (ps2_status | irq_ps2) & ps2_enable & ~ps2_clear;
+            switch_status <= (switch_status | switch_edge) & switch_enable & ~switch_clear;
+            button_status <= (button_status | button_edge) & button_enable & ~button_clear;
+            ps2_status <= (ps2_status | ps2_edge) & ps2_enable & ~ps2_clear;
         end
     end
 
@@ -65,7 +90,7 @@ module interrupt_controller(
             ps2_clear <= 0;
         end else begin
             if(write) begin
-                if(address == 2'b10) begin
+                if(address == 2'b01) begin
                     if(byteenable[0])
                         switch_enable[7:0] <= writedata[7:0];
 
@@ -77,7 +102,7 @@ module interrupt_controller(
 
                     if(byteenable[3])
                         ps2_enable <= writedata[24];
-                end else if(address == 2'b11) begin
+                end else if(address == 2'b10) begin
                     if(byteenable[0])
                         switch_clear[7:0] <= writedata[7:0];
 
@@ -98,6 +123,5 @@ module interrupt_controller(
             end
         end
     end
-
 
 endmodule
