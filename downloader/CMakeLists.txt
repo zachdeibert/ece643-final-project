@@ -1,33 +1,37 @@
-add_executable(downloader
-    src/Container.cpp
-    src/Docker.cpp
-    src/Extractor.cpp
-    src/File.cpp
-    src/Filesystem.cpp
-    src/HTTP.cpp
-    src/Image.cpp
-    src/JSON.cpp
-    src/Loop.cpp
-    src/main.cpp
-    src/ModProbe.cpp
-    src/Runtime.cpp
-    src/Tarball.cpp
-    src/Thread.cpp
-)
+if (CMAKE_SYSTEM_PROCESSOR STREQUAL arm)
 
-target_include_directories(downloader PUBLIC
-    include
-)
+    add_executable(downloader
+        src/Container.cpp
+        src/Docker.cpp
+        src/Extractor.cpp
+        src/File.cpp
+        src/Filesystem.cpp
+        src/HTTP.cpp
+        src/Image.cpp
+        src/JSON.cpp
+        src/Loop.cpp
+        src/main.cpp
+        src/ModProbe.cpp
+        src/Runtime.cpp
+        src/Tarball.cpp
+        src/Thread.cpp
+    )
 
-find_package(CURL REQUIRED)
-find_package(RapidJSON REQUIRED)
-find_package(Threads REQUIRED)
+    target_include_directories(downloader PUBLIC
+        include
+    )
 
-target_link_libraries(downloader PUBLIC
-    CURL::libcurl
-    Threads::Threads
-)
+    find_package(CURL REQUIRED)
+    find_package(RapidJSON REQUIRED)
+    find_package(Threads REQUIRED)
 
-configure_file(src/Upload.sh "${CMAKE_BINARY_DIR}/Upload.sh")
+    target_link_libraries(downloader PUBLIC
+        CURL::libcurl
+        Threads::Threads
+    )
 
-add_dependencies(downloader docker kernel)
+    configure_file(src/Upload.sh "${CMAKE_BINARY_DIR}/Upload.sh")
+
+    add_dependencies(downloader docker kernel)
+
+endif()
