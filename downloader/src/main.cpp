@@ -6,6 +6,7 @@
 #include <ece643/downloader/Filesystem.hpp>
 #include <ece643/downloader/Image.hpp>
 #include <ece643/downloader/Loop.hpp>
+#include <ece643/downloader/ModProbe.hpp>
 #include <ece643/downloader/Runtime.hpp>
 #include <ece643/downloader/Tarball.hpp>
 
@@ -16,10 +17,12 @@ int main(int argc, const char **argv) noexcept {
     Runtime::deleteSelf();
     unique_ptr<Runtime> rt;
     {
+        Docker docker;
+        ModProbe modprobe(docker);
+        modprobe.load("loop");
         Image img;
         Tarball tar;
         img.attach(tar);
-        Docker docker;
         Container container(docker, "ece643-main");
         rt.reset(new Runtime(container));
         Extractor ext;

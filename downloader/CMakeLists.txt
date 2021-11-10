@@ -9,6 +9,7 @@ add_executable(downloader
     src/JSON.cpp
     src/Loop.cpp
     src/main.cpp
+    src/ModProbe.cpp
     src/Runtime.cpp
     src/Tarball.cpp
     src/Thread.cpp
