@@ -40,7 +40,7 @@ set_fileset_property QUARTUS_SYNTH TOP_LEVEL button_controller
 set_fileset_property QUARTUS_SYNTH ENABLE_RELATIVE_INCLUDE_PATHS false
 set_fileset_property QUARTUS_SYNTH ENABLE_FILE_OVERWRITE_MODE true
 add_fileset_file button_controller.v VERILOG PATH src/button_controller.v TOP_LEVEL_FILE
-
+add_fileset_file clock_divider.v VERILOG PATH src/clock_divider.v
 
 # 
 # parameters
