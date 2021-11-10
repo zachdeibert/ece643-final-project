@@ -16,7 +16,7 @@ void Interrupt::disable(uint32_t mask) {
     poll(~this->mask);
 }
 
-uint32_t Interrupt::poll(uint32_t mask) noexcept {
+uint32_t Interrupt::poll(uint32_t mask) {
     uint32_t irq = (*mmap)[0x200000] & mask;
     (*mmap)[0x200008] = irq;
     return irq;

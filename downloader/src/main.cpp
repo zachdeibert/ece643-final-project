@@ -20,7 +20,7 @@ int main(int argc, const char **argv) noexcept {
         Tarball tar;
         img.attach(tar);
         Docker docker;
-        Container container(docker, "ece643-final");
+        Container container(docker, "ece643-main");
         rt.reset(new Runtime(container));
         Extractor ext;
         Loop loop("/dev/mmcblk0", 8LL * 1024 * 1024 * 1024);

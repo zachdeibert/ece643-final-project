@@ -1,4 +1,4 @@
-FROM arm32v7/debian:buster
+FROM --platform=linux/arm/v7 debian:buster
 
 EXPOSE 5900
 

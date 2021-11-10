@@ -9,7 +9,7 @@ add_custom_target(docker ALL
     COMMAND ${CMAKE_COMMAND} -E make_directory bin lib
     COMMAND ${CMAKE_COMMAND} -E copy ../main/lib/* lib
     COMMAND ${CMAKE_COMMAND} -E copy ../main/scripts/main bin
-    COMMAND docker build -t ece643-final .
+    COMMAND docker build -t ece643-main .
     DEPENDS Dockerfile .dockerignore gradle
     COMMENT "Build Docker Image"
 )
