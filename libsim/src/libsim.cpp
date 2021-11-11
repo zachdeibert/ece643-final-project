@@ -20,7 +20,9 @@ extern "C" {
 #endif
             Business business;
             env->CallVoidMethod(setup, env->GetMethodID(env->GetObjectClass(setup), "run", "()V"));
-            business.run();
+            if (!env->ExceptionCheck()) {
+                business.run();
+            }
         } catch (const JavaException &) {
         }
     }

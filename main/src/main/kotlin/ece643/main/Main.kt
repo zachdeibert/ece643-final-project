@@ -3,7 +3,12 @@ package ece643.main
 import ece643.libbusiness.Business
 
 fun main() {
-    println("Hello from main")
-    Business().run<Business, Unit> {
+    var mc: MinecraftLauncher? = null
+    try {
+        Business().run<Business, Unit> {
+            mc = MinecraftLauncher()
+        }
+    } finally {
+        mc?.close();
     }
 }
