@@ -9,7 +9,7 @@ namespace ece643 {
     namespace libbusiness {
         class VNCServer : private libhwio::IPerformSyscalls {
             public:
-                static const uint16_t vncPort = 5901;
+                static const uint16_t vncPort = 5902;
 
                 VNCServer() noexcept;
                 ~VNCServer() noexcept;

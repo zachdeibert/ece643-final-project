@@ -12,6 +12,7 @@ Business::~Business() noexcept(false) {
 }
 
 void Business::run() {
+    hwio.interrupt.poll(0xFFFFFFFF);
     hwio.interrupt.enable(0x000003FF);
     int counter = 0;
     int switches = 0;
