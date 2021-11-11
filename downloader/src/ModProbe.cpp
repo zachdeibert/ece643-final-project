@@ -23,7 +23,6 @@ using namespace ece643::downloader;
 
 ModProbe::ModProbe(Docker &docker) noexcept : docker(docker) {
     ifstream ifs("/proc/modules");
-    ifs.exceptions(ifstream::badbit | ifstream::failbit);
     while (true) {
         string line;
         getline(ifs, line);

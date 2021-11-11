@@ -20,4 +20,5 @@ RUN make -C /linux-4.5/ ARCH=arm CROSS_COMPILE=/gcc-linaro-arm-linux-gnueabihf-4
 
 RUN find /linux-4.5/ -name "*.ko" -exec cp {} / \;
 FROM scratch
+ENTRYPOINT "dummy"
 COPY --from=0 /*.ko /
