@@ -3,7 +3,7 @@
 module vga_controller(
         input  wire        write,       // avalon.write
         input  wire [31:0] writedata,   //       .writedata
-        input  wire [18:0] address,     //       .address
+        input  wire [17:0] address,     //       .address
         input  wire [3:0]  byteenable,  //       .byteenable
         inout  wire [15:0] dram_dq,     //  sdram.dram_dq
         output wire [12:0] dram_addr,   //       .dram_addr

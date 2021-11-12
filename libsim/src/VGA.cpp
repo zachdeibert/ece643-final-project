@@ -28,7 +28,7 @@ void *VGA::buffer() {
 void VGA::write(int x, int y, int width, int height, void *data) {
     JavaEnv &j = JavaEnv::get(mmap);
     pair<jobject, jmethodID> m = j.method("VGA", "write", "(IIIILjava/nio/ByteBuffer;)V");
-    jobject buf = j.jni().NewDirectByteBuffer(data, width * height * 4);
+    jobject buf = j.jni().NewDirectByteBuffer(data, width * height * 2);
     j.jni().CallVoidMethod(m.first, m.second, x, y, width, height, buf);
     j.jni().DeleteLocalRef(buf);
     j.postCall();

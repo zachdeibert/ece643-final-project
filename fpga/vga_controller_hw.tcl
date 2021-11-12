@@ -80,7 +80,7 @@ set_interface_property avalon SVD_ADDRESS_GROUP ""
 
 add_interface_port avalon write write Input 1
 add_interface_port avalon writedata writedata Input 32
-add_interface_port avalon address address Input 19
+add_interface_port avalon address address Input 18
 add_interface_port avalon byteenable byteenable Input 4
 set_interface_assignment avalon embeddedsw.configuration.isFlash 0
 set_interface_assignment avalon embeddedsw.configuration.isMemoryDevice 0

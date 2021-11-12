@@ -12,5 +12,5 @@ void LED::set(int leds, int hours, int minutes, bool pm) {
     if ((leds & ~0x3FF) || hours < 0 || hours >= 12 || minutes < 0 || minutes >= 60) {
         throw invalid_argument("LED::set");
     }
-    (*mmap)[0x200020] = leds | (minutes << 16) | (hours << 24) | (pm ? (1 << 28) : 0);
+    (*mmap)[0x100020] = leds | (minutes << 16) | (hours << 24) | (pm ? (1 << 28) : 0);
 }

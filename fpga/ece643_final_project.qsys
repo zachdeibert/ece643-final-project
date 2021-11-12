@@ -82,7 +82,7 @@
       }
       datum baseAddress
       {
-         value = "2097152";
+         value = "1048576";
          type = "String";
       }
    }
@@ -103,7 +103,7 @@
       }
       datum baseAddress
       {
-         value = "2097184";
+         value = "1048608";
          type = "String";
       }
    }
@@ -124,7 +124,7 @@
       }
       datum baseAddress
       {
-         value = "2097168";
+         value = "1048592";
          type = "String";
       }
    }

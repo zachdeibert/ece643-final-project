@@ -52,7 +52,7 @@ VNCClient::VNCClient(VGA &vga) noexcept : fd(socket(AF_INET, SOCK_STREAM, 0)), v
     }
     check(write(fd, "\x01", 1) - 1);
     check(read(fd, buf, 27) - 27);
-    if (memcmp(buf, "\x02\x80\x01\xE0 \x18\0\x01\0\xFF\0\xFF\0\xFF\x10\x08\0\0\0\0\0\0\0\x03x11", 27)) {
+    if (memcmp(buf, "\x02\x80\x01\xE0\x10\x10\0\x01\0\x1F\0\x3F\0\x1F\x0B\x05\0\0\0\0\0\0\0\x03x11", 27)) {
         cerr << "Invalid framebuffer parameters" << endl;
         terminate();
     }
@@ -85,7 +85,7 @@ void VNCClient::poll(microseconds maxDelay) {
             check(read(fd, header, 8) - 8);
             int width = ((header[4] << 8) | header[5]);
             int height = ((header[6] << 8) | header[7]);
-            rectBytesLeft = width * height * 4 + 4;
+            rectBytesLeft = width * height * 2 + 4;
             if (rectBytesLeft + 8 > VGA::maxPacket) {
                 cerr << "Packet size is larger than VGA buffer!" << endl;
                 terminate();

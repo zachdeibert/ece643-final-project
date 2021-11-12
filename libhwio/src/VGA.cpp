@@ -25,5 +25,5 @@ void VGA::write(int x, int y, int width, int height, void *data) {
     header[4] = 0;
     header[5] = 0;
     memcpy(buffer(), header, sizeof(header));
-    memcpy(((uint8_t *) buffer()) + 0xC, data, width * height * 4);
+    memcpy(((uint8_t *) buffer()) + 0xC, data, width * height * 2);
 }

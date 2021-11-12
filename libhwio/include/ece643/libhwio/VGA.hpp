@@ -10,7 +10,7 @@ namespace ece643 {
             public:
                 static const int width = 640;
                 static const int height = 480;
-                static const uint32_t maxPacket = 0x200000;
+                static const uint32_t maxPacket = 0x100000;
 
                 VGA(MMap &mmap) noexcept;
 

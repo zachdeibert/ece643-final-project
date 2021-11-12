@@ -424,7 +424,7 @@ bg=light_gray</panel_attributes>
       <w>120</w>
       <h>60</h>
     </coordinates>
-    <panel_attributes>C0200004
+    <panel_attributes>C0100004
 bg=green</panel_attributes>
     <additional_attributes/>
   </element>
@@ -510,7 +510,7 @@ bg=light_gray</panel_attributes>
       <w>120</w>
       <h>60</h>
     </coordinates>
-    <panel_attributes>C0200000
+    <panel_attributes>C0100000
 bg=blue</panel_attributes>
     <additional_attributes/>
   </element>
@@ -596,7 +596,7 @@ bg=light_gray</panel_attributes>
       <w>120</w>
       <h>60</h>
     </coordinates>
-    <panel_attributes>C0200008
+    <panel_attributes>C0100008
 bg=green</panel_attributes>
     <additional_attributes/>
   </element>
@@ -681,7 +681,7 @@ bg=light_gray</panel_attributes>
       <w>120</w>
       <h>60</h>
     </coordinates>
-    <panel_attributes>C0200020
+    <panel_attributes>C0100020
 bg=green</panel_attributes>
     <additional_attributes/>
   </element>
@@ -717,8 +717,8 @@ bg=orange</panel_attributes>
       <w>120</w>
       <h>120</h>
     </coordinates>
-    <panel_attributes>C0200014
-C020001F
+    <panel_attributes>C0100014
+C010001F
 bg=blue</panel_attributes>
     <additional_attributes/>
   </element>
@@ -730,7 +730,7 @@ bg=blue</panel_attributes>
       <w>120</w>
       <h>60</h>
     </coordinates>
-    <panel_attributes>C0200010
+    <panel_attributes>C0100010
 bg=cyan</panel_attributes>
     <additional_attributes/>
   </element>
@@ -910,7 +910,7 @@ bg=light_gray</panel_attributes>
       <w>120</w>
       <h>60</h>
     </coordinates>
-    <panel_attributes>C020000C
+    <panel_attributes>C010000C
 bg=light_gray</panel_attributes>
     <additional_attributes/>
   </element>
