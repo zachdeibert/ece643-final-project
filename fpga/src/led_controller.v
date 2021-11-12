@@ -20,7 +20,7 @@ module led_controller(
     reg [3:0] minuteTens;
     reg [3:0] minuteOnes;
 
-    assign sevenseg5 = (hourTens == 0) ? 7'b0000000 : 7'b0000110;
+    assign sevenseg5 = (hourTens == 0) ? ~7'b0000000 : ~7'b0000110;
     seven_segment ss4(.in(hourOnes), .out(sevenseg4));
     seven_segment ss3(.in(minuteTens), .out(sevenseg3));
     seven_segment ss2(.in(minuteOnes), .out(sevenseg2));
@@ -57,6 +57,6 @@ module led_controller(
         end
     end
 
-    assign sevenseg0 = 7'b0110111;
+    assign sevenseg0 = ~7'b0110111;
 
 endmodule
