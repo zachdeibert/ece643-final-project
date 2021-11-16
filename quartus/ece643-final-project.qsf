@@ -1,7 +1,7 @@
 ################################################################################
 #### Clock Source
-set_location_assignment PIN_AF14 -to clk_clk
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to clk_clk
+set_location_assignment PIN_AF14 -to system_pll_ref_clk
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to system_pll_ref_clk
 
 ################################################################################
 #### Arria V/Cyclone V Hard Processor System

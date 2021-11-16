@@ -5,6 +5,9 @@ module vga_controller(
         input  wire [31:0] writedata,   //       .writedata
         input  wire [17:0] address,     //       .address
         input  wire [3:0]  byteenable,  //       .byteenable
+
+        input  wire        vga_clk_in,  // vga_clk_in
+
         inout  wire [15:0] dram_dq,     //  sdram.dram_dq
         output wire [12:0] dram_addr,   //       .dram_addr
         output wire [1:0]  dram_ba,     //       .dram_ba
@@ -19,7 +22,7 @@ module vga_controller(
         output reg  [7:0]  vga_r,       //    vga.vga_r
         output reg  [7:0]  vga_g,       //       .vga_g
         output reg  [7:0]  vga_b,       //       .vga_b
-        output reg         vga_clk,     //       .vga_clk
+        output wire        vga_clk,     //       .vga_clk
         output wire        vga_sync_n,  //       .vga_sync_n
         output wire        vga_blank_n, //       .vga_blank_n
         output reg         vga_vs,      //       .vga_vs
@@ -41,19 +44,12 @@ module vga_controller(
     localparam ROW_PIXELS = 640;
     localparam COL_PIXELS = 480;
 
-    // Every time clk rises, invert vga_clk
-    always @(posedge clk) begin
-        if(reset) begin
-            vga_clk <= 1'b0;
-        end else begin
-            vga_clk <= ~vga_clk;
-        end
-    end
+    assign vga_clk = vga_clk_in;
 
     reg [9:0] row_cnt;
     reg [9:0] col_cnt;
 
-    always @(posedge vga_clk) begin
+    always @(posedge vga_clk_in) begin
         if (reset) begin
             row_cnt <= 0;
             col_cnt <= 0;
@@ -71,7 +67,7 @@ module vga_controller(
         end
     end
 
-    always @(posedge vga_clk) begin
+    always @(posedge vga_clk_in) begin
         if (reset) begin
             vga_hs <= 1;
         end else begin
@@ -83,7 +79,7 @@ module vga_controller(
         end 
     end
 
-    always @(posedge vga_clk) begin
+    always @(posedge vga_clk_in) begin
         if (reset) begin
             vga_vs <= 1;
         end else begin
@@ -95,7 +91,7 @@ module vga_controller(
         end 
     end
 
-    always @(posedge vga_clk) begin
+    always @(posedge vga_clk_in) begin
         if(reset) begin
             vga_b <= 0;
             vga_g <= 0;

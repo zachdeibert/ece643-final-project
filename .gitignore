@@ -18,6 +18,7 @@ db/
 hps_isw_handoff/
 incremental_db/
 output_files/
+quartus/*.csv
 
 /build/
 /fpga/ece643_final_project/

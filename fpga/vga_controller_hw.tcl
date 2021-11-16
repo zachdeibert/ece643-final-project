@@ -148,6 +148,19 @@ set_interface_property clk SVD_ADDRESS_GROUP ""
 
 add_interface_port clk clk clk Input 1
 
+# 
+# connection point vga_clk_in
+# 
+add_interface vga_clk_in clock end
+set_interface_property vga_clk_in clockRate 0
+set_interface_property vga_clk_in ENABLED true
+set_interface_property vga_clk_in EXPORT_OF ""
+set_interface_property vga_clk_in PORT_NAME_MAP ""
+set_interface_property vga_clk_in CMSIS_SVD_VARIABLES ""
+set_interface_property vga_clk_in SVD_ADDRESS_GROUP ""
+
+add_interface_port vga_clk_in vga_clk_in clk Input 1
+
 
 # 
 # connection point reset
