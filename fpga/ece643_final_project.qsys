@@ -49,6 +49,14 @@
          type = "String";
       }
    }
+   element ece643_final_project
+   {
+      datum _originalDeviceFamily
+      {
+         value = "Cyclone V";
+         type = "String";
+      }
+   }
    element hps
    {
       datum _sortIndex
@@ -120,6 +128,14 @@
          type = "String";
       }
    }
+   element sdram
+   {
+      datum _sortIndex
+      {
+         value = "8";
+         type = "int";
+      }
+   }
    element system_pll
    {
       datum _sortIndex
@@ -134,14 +150,6 @@
       {
          value = "0";
          type = "int";
-      }
-   }
-   element vga_controller.avalon
-   {
-      datum _lockedAddress
-      {
-         value = "1";
-         type = "boolean";
       }
    }
    element vga_pll
@@ -191,12 +199,17 @@
    internal="interrupt_controller.reset1" />
  <interface name="leds" internal="led_controller.leds" type="conduit" dir="end" />
  <interface name="ps2" internal="ps2_controller.ps2" type="conduit" dir="end" />
- <interface name="sdram" internal="vga_controller.sdram" type="conduit" dir="end" />
+ <interface name="sdram" internal="sdram.wire" type="conduit" dir="end" />
  <interface
    name="system_pll_ref_clk"
    internal="system_pll.ref_clk"
    type="clock"
    dir="end" />
+ <interface
+   name="system_pll_sdram_clk"
+   internal="system_pll.sdram_clk"
+   type="clock"
+   dir="start" />
  <interface name="vga" internal="vga_controller.vga" type="conduit" dir="end" />
  <module
    name="button_controller"
@@ -741,6 +754,35 @@
  <module name="led_controller" kind="led_controller" version="1.0" enabled="1" />
  <module name="ps2_controller" kind="ps2_controller" version="1.0" enabled="1" />
  <module
+   name="sdram"
+   kind="altera_avalon_new_sdram_controller"
+   version="20.1"
+   enabled="1">
+  <parameter name="TAC" value="5.5" />
+  <parameter name="TMRD" value="3" />
+  <parameter name="TRCD" value="20.0" />
+  <parameter name="TRFC" value="70.0" />
+  <parameter name="TRP" value="20.0" />
+  <parameter name="TWR" value="14.0" />
+  <parameter name="casLatency" value="3" />
+  <parameter name="clockRate" value="100000000" />
+  <parameter name="columnWidth" value="10" />
+  <parameter name="componentName" value="$${FILENAME}_sdram" />
+  <parameter name="dataWidth" value="16" />
+  <parameter name="generateSimulationModel" value="false" />
+  <parameter name="initNOPDelay" value="0.0" />
+  <parameter name="initRefreshCommands" value="2" />
+  <parameter name="masteredTristateBridgeSlave" value="0" />
+  <parameter name="model">single_Micron_MT48LC4M32B2_7_chip</parameter>
+  <parameter name="numberOfBanks" value="4" />
+  <parameter name="numberOfChipSelects" value="1" />
+  <parameter name="pinsSharedViaTriState" value="false" />
+  <parameter name="powerUpDelay" value="100.0" />
+  <parameter name="refreshPeriod" value="15.625" />
+  <parameter name="registerDataIn" value="true" />
+  <parameter name="rowWidth" value="13" />
+ </module>
+ <module
    name="system_pll"
    kind="altera_up_avalon_sys_sdram_pll"
    version="18.0"
@@ -991,7 +1033,16 @@
    kind="avalon"
    version="20.1"
    start="hps.h2f_axi_master"
-   end="vga_controller.avalon">
+   end="vga_controller.mm_slave">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x0000" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection
+   kind="avalon"
+   version="20.1"
+   start="vga_controller.sdram_master"
+   end="sdram.s1">
   <parameter name="arbitrationPriority" value="1" />
   <parameter name="baseAddress" value="0x0000" />
   <parameter name="defaultConnection" value="false" />
@@ -1026,6 +1077,11 @@
    version="20.1"
    start="system_pll.sys_clk"
    end="vga_controller.clk" />
+ <connection
+   kind="clock"
+   version="20.1"
+   start="system_pll.sys_clk"
+   end="sdram.clk" />
  <connection
    kind="clock"
    version="20.1"
@@ -1089,6 +1145,7 @@
    start="hps.h2f_reset"
    end="vga_controller.reset" />
  <connection kind="reset" version="20.1" start="hps.h2f_reset" end="vga_pll.reset" />
+ <connection kind="reset" version="20.1" start="hps.h2f_reset" end="sdram.reset" />
  <connection
    kind="reset"
    version="20.1"
