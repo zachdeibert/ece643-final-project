@@ -270,6 +270,10 @@ set_instance_assignment -name PACKAGE_SKEW_COMPENSATION OFF -to ddr3_mem_ck_n -t
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to hps_io_hps_io_i2c1_inst_SCL
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to hps_io_hps_io_i2c1_inst_SDA
 
+# UART
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to hps_io_hps_io_uart0_inst_RX
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to hps_io_hps_io_uart0_inst_TX
+
 ################################################################################
 #### Button Controller
 # Buttons
