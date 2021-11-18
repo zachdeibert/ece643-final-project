@@ -4,7 +4,8 @@ module vga_controller(
         input  wire        vga_clk_in,  // vga_clk_in
         input  wire        clk,         // clk
 
-        output reg         frame_start, // vga_frame_ctrl.frame_start
+        output wire        frame_start, // vga_frame_ctrl.frame_start
+        output wire        frame_hold,  //               .frame_hold
 
         output wire [7:0]  vga_r,       //    vga.vga_r
         output wire [7:0]  vga_g,       //       .vga_g
@@ -16,7 +17,7 @@ module vga_controller(
         output reg         vga_hs,      //       .vga_hs
 
         input  wire [15:0] vga_data,    //  vga_sink.vga_data
-        output reg         vga_ready,   //          .vga_ready
+        output wire        vga_ready,   //          .vga_ready
         input  wire        vga_valid,   //          .vga_valid
 
         input  wire        reset        //  reset.reset
@@ -43,16 +44,25 @@ module vga_controller(
     reg [9:0] col_cnt;
 
     reg [15:0] vga_pixel_color;
-    assign vga_r = { vga_pixel_color[15:11], 3'b000 };
-    assign vga_g = { vga_pixel_color[10:5], 2'b00 };
-    assign vga_b = { vga_pixel_color[4:0], 3'b00 };
+    assign vga_r = { vga_pixel_color[15:11], (vga_pixel_color[15])? 3'b111: 3'b000 };
+    assign vga_g = { vga_pixel_color[10:5], (vga_pixel_color[10])? 2'b11: 2'b00 };
+    assign vga_b = { vga_pixel_color[4:0], (vga_pixel_color[4])? 3'b111: 3'b000 };
 
+    assign vga_ready = (row_cnt >= ROW_PIXELS || col_cnt >= COL_PIXELS + AFTER_COL) ? 1'b0 : 1'b1;
+
+    // Tell source that we're clearning the fifo and not to load any data yet
+    assign frame_hold = (col_cnt >= COL_PIXELS && col_cnt < COL_PIXELS + AFTER_COL) ? 1'b1 : 1'b0;
+    assign frame_start = ~vga_vs;
 
     always @(posedge vga_clk_in) begin
         if (reset) begin
             vga_pixel_color <= 0;
         end else begin
-            vga_pixel_color <= vga_in_pixel_addr[15:0];
+            if(vga_valid && vga_ready) begin
+                vga_pixel_color <= vga_data;
+            end else begin
+                vga_pixel_color <= 0;
+            end
         end
     end
 
@@ -91,19 +101,6 @@ module vga_controller(
                 vga_hs <= 1;
             end
         end 
-    end
-
-    reg vga_has_read_priority;
-    always @(posedge vga_clk_in) begin
-        if (reset) begin
-            vga_has_read_priority <= 0;
-        end else begin
-            if (row_cnt >= ROW_PIXELS || col_cnt >= COL_PIXELS) begin
-                vga_has_read_priority <= 0;
-            end else begin
-                vga_has_read_priority <= 1;
-            end
-        end
     end
 
     always @(posedge vga_clk_in) begin

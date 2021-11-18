@@ -191,4 +191,5 @@ set_interface_property vga_frame_ctrl CMSIS_SVD_VARIABLES ""
 set_interface_property vga_frame_ctrl SVD_ADDRESS_GROUP ""
 
 add_interface_port vga_frame_ctrl frame_start frame_start Input 1
+add_interface_port vga_frame_ctrl frame_hold frame_hold Input 1
 
