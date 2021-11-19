@@ -30,11 +30,13 @@ void PS2Command::run(HWIO &hwio, const vector<string> &args) {
             }
         } while (!hwio.interrupt.poll(1 << 24));
         string data = hwio.ps2.poll();
-        cout << "PS/2 data:" << hex << showbase;
+        ios_base::fmtflags flags = cout.flags();
+        cout << "PS/2 data:" << hex << showbase << internal << setfill('0');
         for (string::const_iterator it = data.begin(); it != data.end(); ++it) {
-            cout << " " << setw(2) << (int) *it << endl;
+            cout << " " << setw(4) << (int) *it;
         }
-        cout << resetiosflags;
+        cout << endl;
+        cout.flags(flags);
     }
 }
 

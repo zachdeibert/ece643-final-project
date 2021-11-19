@@ -152,6 +152,14 @@
          type = "int";
       }
    }
+   element sdram.s1
+   {
+      datum _lockedAddress
+      {
+         value = "1";
+         type = "boolean";
+      }
+   }
    element system_pll
    {
       datum _sortIndex
@@ -166,6 +174,14 @@
       {
          value = "0";
          type = "int";
+      }
+   }
+   element vga_controller.mm_slave
+   {
+      datum _lockedAddress
+      {
+         value = "1";
+         type = "boolean";
       }
    }
    element vga_pll
@@ -1024,7 +1040,7 @@
    start="hps.h2f_axi_master"
    end="interrupt_controller.avalon">
   <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x00200000" />
+  <parameter name="baseAddress" value="0x00100000" />
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection
@@ -1033,7 +1049,7 @@
    start="hps.h2f_axi_master"
    end="ps2_controller.avalon">
   <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x00200010" />
+  <parameter name="baseAddress" value="0x00100010" />
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection
@@ -1042,7 +1058,7 @@
    start="hps.h2f_axi_master"
    end="led_controller.avalon">
   <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x00200020" />
+  <parameter name="baseAddress" value="0x00100020" />
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection
