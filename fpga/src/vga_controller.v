@@ -1,33 +1,25 @@
 `timescale 1 ps / 1 ps
 
 module vga_controller(
-        input  wire        hps_write,       // avalon.write
-        input  wire [31:0] hps_writedata,   //       .writedata
-        input  wire [17:0] hps_address,     //       .address
-        input  wire [3:0]  hps_byteenable,  //       .byteenable
-        output wire        hps_waitrequest, //       .waitrequest
-
-        output wire [25:0] sdram_address,       // sdram.address
-        output wire [1:0]  sdram_byteenable,    //      .byteenable
-        output wire        sdram_read,          //      .read
-        input  wire [15:0] sdram_readdata,      //      .readdata
-        input  wire        sdram_readdatavalid, //      .readdatavalid
-        input  wire        sdram_waitrequest,   //      .waitrequest
-        output wire        sdram_write,         //      .write
-        output wire [15:0] sdram_writedata,     //      .writedata
-        output wire        sdram_outputenable,  //      .outputenable
-
         input  wire        vga_clk_in,  // vga_clk_in
+        input  wire        clk,         // clk
 
-        output reg  [7:0]  vga_r,       //    vga.vga_r
-        output reg  [7:0]  vga_g,       //       .vga_g
-        output reg  [7:0]  vga_b,       //       .vga_b
+        output wire        frame_start, // vga_frame_ctrl.frame_start
+        output wire        frame_hold,  //               .frame_hold
+
+        output wire [7:0]  vga_r,       //    vga.vga_r
+        output wire [7:0]  vga_g,       //       .vga_g
+        output wire [7:0]  vga_b,       //       .vga_b
         output wire        vga_clk,     //       .vga_clk
         output wire        vga_sync_n,  //       .vga_sync_n
         output wire        vga_blank_n, //       .vga_blank_n
         output reg         vga_vs,      //       .vga_vs
         output reg         vga_hs,      //       .vga_hs
-        input  wire        clk,         //    clk.clk
+
+        input  wire [15:0] vga_data,    //  vga_sink.vga_data
+        output wire        vga_ready,   //          .vga_ready
+        input  wire        vga_valid,   //          .vga_valid
+
         input  wire        reset        //  reset.reset
     );
 
@@ -45,22 +37,41 @@ module vga_controller(
     localparam COL_PIXELS = 480;
 
     assign vga_clk = vga_clk_in;
-    assign hps_waitrequest = 1'b0;
 
-    assign sdram_address = 'b0;
-    assign sdram_byteenable = 'b0;
-    assign sdram_read = 1'b0;
-    assign sdram_write = 1'b0;
-    assign sdram_writedata = 'b0;
-    assign sdram_outputenable = 1'b0;
+    reg [18:0] vga_in_pixel_addr;
 
     reg [9:0] row_cnt;
     reg [9:0] col_cnt;
 
+    reg [15:0] vga_pixel_color;
+    assign vga_r = { vga_pixel_color[15:11], (vga_pixel_color[15])? 3'b111: 3'b000 };
+    assign vga_g = { vga_pixel_color[10:5], (vga_pixel_color[10])? 2'b11: 2'b00 };
+    assign vga_b = { vga_pixel_color[4:0], (vga_pixel_color[4])? 3'b111: 3'b000 };
+
+    assign vga_ready = (row_cnt >= ROW_PIXELS || col_cnt >= COL_PIXELS + AFTER_COL) ? 1'b0 : 1'b1;
+
+    // Tell source that we're clearning the fifo and not to load any data yet
+    assign frame_hold = (col_cnt >= COL_PIXELS && col_cnt < COL_PIXELS + AFTER_COL) ? 1'b1 : 1'b0;
+    assign frame_start = ~vga_vs;
+
+    always @(posedge vga_clk_in) begin
+        if (reset) begin
+            vga_pixel_color <= 0;
+        end else begin
+            if(vga_valid && vga_ready) begin
+                vga_pixel_color <= vga_data;
+            end else begin
+                vga_pixel_color <= 0;
+            end
+        end
+    end
+
+    // Manage VGA row and column positions
     always @(posedge vga_clk_in) begin
         if (reset) begin
             row_cnt <= 0;
             col_cnt <= 0;
+            vga_in_pixel_addr <= 0;
         end else begin
             if (row_cnt >= ROW_CNT-1) begin
                 row_cnt <= 0;
@@ -71,6 +82,11 @@ module vga_controller(
                 end
             end else begin
                 row_cnt <= row_cnt + 1;
+                if (row_cnt < ROW_PIXELS)
+                    if (col_cnt < COL_PIXELS)
+                        vga_in_pixel_addr <= vga_in_pixel_addr + 1;
+                else
+                    vga_in_pixel_addr <= 0;
             end
         end
     end
@@ -99,40 +115,7 @@ module vga_controller(
         end 
     end
 
-    always @(posedge vga_clk_in) begin
-        if(reset) begin
-            vga_b <= 0;
-            vga_g <= 0;
-            vga_r <= 0;
-        end else begin
-            if(row_cnt <= ROW_PIXELS && col_cnt <= COL_PIXELS) begin
-                if(row_cnt <= 320) begin
-                    if(col_cnt <= 240) begin
-                        vga_r <= 8'b11111111;
-                        vga_g <= 0;
-                        vga_b <= 0;
-                    end else begin
-                        vga_r <= 0;
-                        vga_g <= 8'b11111111;
-                        vga_b <= 0;
-                    end
-                end else begin
-                    if(col_cnt <= 240) begin
-                        vga_r <= 0;
-                        vga_g <= 0;
-                        vga_b <= 8'b11111111;
-                    end else begin
-                        vga_r <= 8'b11111111;
-                        vga_g <= 0;
-                        vga_b <= 8'b11111111;
-                    end
-                end
-            end else begin
-                vga_r <= 8'b00000000;
-                vga_g <= 8'b00000000;
-                vga_b <= 8'b00000000;
-            end
-        end
-    end
+    assign vga_blank_n = 1'b1;
+    assign vga_sync_n = 1'b1;
 
 endmodule
