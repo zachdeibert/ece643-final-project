@@ -18,7 +18,7 @@ File::File(uint8_t *header) noexcept
     , checksum(octal32(header + 148))
     , type(header[156] ? (Type) header[156] : Normal)
     , linkTarget((const char *) (header + 157), strlen(header + 157, 100))
-    , isUStar(!memcmp(header + 257, "ustar\0""00\0", 10))
+    , isUStar(!memcmp(header + 257, "ustar\0""00", 8))
     , ownerUser((const char *) (header + 265), strlen(header + 265, 32))
     , ownerGroup((const char *) (header + 297), strlen(header + 297, 32))
     , deviceNumber((((dev_t) octal32(header + 337)) << 4) | (dev_t) octal32(header + 329))
