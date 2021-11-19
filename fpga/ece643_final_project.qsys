@@ -7,7 +7,7 @@
    description=""
    tags=""
    categories="System" />
- <parameter name="bonusData"><![CDATA[bonusData
+ <parameter name="bonusData"><![CDATA[bonusData 
 {
    element button_controller
    {
@@ -192,14 +192,6 @@
          type = "int";
       }
    }
-   element vga_controller.mm_slave
-   {
-      datum _lockedAddress
-      {
-         value = "1";
-         type = "boolean";
-      }
-   }
    element vga_pll
    {
       datum _sortIndex
@@ -341,9 +333,9 @@
   <parameter name="EMAC0_Mode" value="N/A" />
   <parameter name="EMAC0_PTP" value="false" />
   <parameter name="EMAC0_PinMuxing" value="Unused" />
-  <parameter name="EMAC1_Mode" value="N/A" />
+  <parameter name="EMAC1_Mode" value="RGMII" />
   <parameter name="EMAC1_PTP" value="false" />
-  <parameter name="EMAC1_PinMuxing" value="Unused" />
+  <parameter name="EMAC1_PinMuxing" value="HPS I/O Set 0" />
   <parameter name="ENABLE_ABS_RAM_MEM_INIT" value="false" />
   <parameter name="ENABLE_BONDING" value="false" />
   <parameter name="ENABLE_BURST_MERGE" value="false" />
@@ -413,7 +405,7 @@
   <parameter name="FPGA_PERIPHERAL_OUTPUT_CLOCK_FREQ_SDIO_CCLK" value="100" />
   <parameter name="FPGA_PERIPHERAL_OUTPUT_CLOCK_FREQ_SPIM0_SCLK_OUT" value="100" />
   <parameter name="FPGA_PERIPHERAL_OUTPUT_CLOCK_FREQ_SPIM1_SCLK_OUT" value="100" />
-  <parameter name="GPIO_Enable">No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No</parameter>
+  <parameter name="GPIO_Enable">No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,Yes,No,No,No,No,No,No,No,No,No,No,No,No,Yes,No,No,No,No,Yes,Yes,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No</parameter>
   <parameter name="GP_Enable" value="false" />
   <parameter name="H2F_AXI_CLOCK_FREQ" value="100000000" />
   <parameter name="H2F_CTI_CLOCK_FREQ" value="100" />
@@ -637,8 +629,8 @@
   <parameter name="S2FINTERRUPT_USB_Enable" value="false" />
   <parameter name="S2FINTERRUPT_WATCHDOG_Enable" value="false" />
   <parameter name="S2F_Width" value="2" />
-  <parameter name="SDIO_Mode" value="N/A" />
-  <parameter name="SDIO_PinMuxing" value="Unused" />
+  <parameter name="SDIO_Mode" value="4-bit Data" />
+  <parameter name="SDIO_PinMuxing" value="HPS I/O Set 0" />
   <parameter name="SEQUENCER_TYPE" value="NIOS" />
   <parameter name="SEQ_MODE" value="0" />
   <parameter name="SKIP_MEM_INIT" value="true" />
@@ -732,7 +724,7 @@
   <parameter name="dbg_trace_clk_div" value="0" />
   <parameter name="desired_can0_clk_mhz" value="100.0" />
   <parameter name="desired_can1_clk_mhz" value="100.0" />
-  <parameter name="desired_cfg_clk_mhz" value="50.0" />
+  <parameter name="desired_cfg_clk_mhz" value="100.0" />
   <parameter name="desired_emac0_clk_mhz" value="250.0" />
   <parameter name="desired_emac1_clk_mhz" value="250.0" />
   <parameter name="desired_gpio_db_clk_hz" value="32000" />
@@ -1132,13 +1124,13 @@
  <connection
    kind="clock"
    version="20.1"
-   start="system_pll.sys_clk"
-   end="vga_controller.clk" />
+   start="vga_pll.outclk0"
+   end="vga_controller.vga_clk_in" />
  <connection
    kind="clock"
    version="20.1"
-   start="vga_pll.outclk0"
-   end="vga_controller.vga_clk_in" />
+   start="system_pll.sys_clk"
+   end="vga_controller.clk" />
  <connection
    kind="clock"
    version="20.1"
