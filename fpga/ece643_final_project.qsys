@@ -251,6 +251,11 @@
    type="clock"
    dir="start" />
  <interface name="vga" internal="vga_controller.vga" type="conduit" dir="end" />
+ <interface
+   name="vga_pll_refclk"
+   internal="vga_pll.refclk"
+   type="clock"
+   dir="end" />
  <module
    name="button_controller"
    kind="button_controller"
@@ -1056,7 +1061,7 @@
   <parameter name="gui_ps_units9" value="ps" />
   <parameter name="gui_refclk1_frequency" value="100.0" />
   <parameter name="gui_refclk_switch" value="false" />
-  <parameter name="gui_reference_clock_frequency" value="100.0" />
+  <parameter name="gui_reference_clock_frequency" value="50.0" />
   <parameter name="gui_switchover_delay" value="0" />
   <parameter name="gui_switchover_mode">Automatic Switchover</parameter>
   <parameter name="gui_use_locked" value="false" />
@@ -1171,11 +1176,6 @@
    version="20.1"
    start="system_pll.sys_clk"
    end="vga_fifo.in_clk" />
- <connection
-   kind="clock"
-   version="20.1"
-   start="system_pll.sys_clk"
-   end="vga_pll.refclk" />
  <connection
    kind="conduit"
    version="20.1"

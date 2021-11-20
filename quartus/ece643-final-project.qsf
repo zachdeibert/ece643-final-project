@@ -500,6 +500,10 @@ set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to leds_sevenseg5[6]
 ################################################################################
 #### VGA Controller
 # VGA
+# VGA Clk Int (CLOCK2_50)
+set_location_assignment PIN_AA16 -to vga_pll_refclk_clk
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to vga_pll_refclk_clk
+
 set_location_assignment PIN_A13 -to vga_vga_r[0]
 set_location_assignment PIN_C13 -to vga_vga_r[1]
 set_location_assignment PIN_E13 -to vga_vga_r[2]
