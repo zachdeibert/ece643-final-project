@@ -266,9 +266,26 @@ set_instance_assignment -name PACKAGE_SKEW_COMPENSATION OFF -to ddr3_mem_reset_n
 set_instance_assignment -name PACKAGE_SKEW_COMPENSATION OFF -to ddr3_mem_ck -tag __hps_sdram_p0
 set_instance_assignment -name PACKAGE_SKEW_COMPENSATION OFF -to ddr3_mem_ck_n -tag __hps_sdram_p0
 
+# SPI
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to hps_io_hps_io_spim1_inst_CLK
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to hps_io_hps_io_spim1_inst_MISO
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to hps_io_hps_io_spim1_inst_MOSI
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to hps_io_hps_io_spim1_inst_SS0
+
+# Quad SPI Flash
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to hps_io_hps_io_qspi_inst_IO0
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to hps_io_hps_io_qspi_inst_IO1
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to hps_io_hps_io_qspi_inst_IO2
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to hps_io_hps_io_qspi_inst_IO3
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to hps_io_hps_io_qspi_inst_SS0
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to hps_io_hps_io_qspi_inst_CLK
+
+
 # I2C
 # GPIO is HPS_I2C_CONTROL
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to hps_io_hps_io_gpio_inst_GPIO48
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to hps_io_hps_io_i2c0_inst_SCL
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to hps_io_hps_io_i2c0_inst_SDA
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to hps_io_hps_io_i2c1_inst_SCL
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to hps_io_hps_io_i2c1_inst_SDA
 
@@ -301,11 +318,33 @@ set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to hps_io_hps_io_sdio_i
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to hps_io_hps_io_sdio_inst_D2
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to hps_io_hps_io_sdio_inst_D3
 
+# USB
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to hps_io_hps_io_gpio_inst_GPIO09
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to hps_io_hps_io_usb1_inst_CLK
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to hps_io_hps_io_usb1_inst_D0
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to hps_io_hps_io_usb1_inst_D1
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to hps_io_hps_io_usb1_inst_D2
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to hps_io_hps_io_usb1_inst_D3
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to hps_io_hps_io_usb1_inst_D4
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to hps_io_hps_io_usb1_inst_D5
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to hps_io_hps_io_usb1_inst_D6
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to hps_io_hps_io_usb1_inst_D7
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to hps_io_hps_io_usb1_inst_DIR
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to hps_io_hps_io_usb1_inst_NXT
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to hps_io_hps_io_usb1_inst_STP
+
+# GSensor Interrupt
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to hps_io_hps_io_gpio_inst_GPIO61
+
 # User Key
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to hps_io_hps_io_gpio_inst_GPIO54
 
 # HPS LED
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to hps_io_hps_io_gpio_inst_GPIO53
+
+# General IO (I don't think this will be needed, but just in case)
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to hps_io_hps_io_gpio_inst_GPIO40
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to hps_io_hps_io_gpio_inst_GPIO41
 
 ################################################################################
 #### Button Controller
