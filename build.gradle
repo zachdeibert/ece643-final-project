@@ -23,6 +23,18 @@ subprojects {
     }
 
     repositories {
+        ivy {
+            metadataSources {
+                artifact()
+            }
+            patternLayout {
+                artifact "[revision]/[artifact].[ext]"
+            }
+            url "https://launcher.mojang.com/v1/objects/"
+        }
+        maven {
+            url "https://libraries.minecraft.net/"
+        }
         mavenCentral()
     }
 }
