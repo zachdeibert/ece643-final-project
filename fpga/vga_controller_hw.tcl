@@ -123,6 +123,8 @@ set_interface_property vga_sink SVD_ADDRESS_GROUP ""
 add_interface_port vga_sink vga_data data Input 16
 add_interface_port vga_sink vga_ready ready Output 1
 add_interface_port vga_sink vga_valid valid Input 1
+add_interface_port vga_sink vga_start startofpacket Input 1
+add_interface_port vga_sink vga_end endofpacket Input 1
 
 
 # 
