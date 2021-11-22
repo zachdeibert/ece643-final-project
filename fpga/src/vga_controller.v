@@ -16,9 +16,11 @@ module vga_controller(
         output reg         vga_vs,      //       .vga_vs
         output reg         vga_hs,      //       .vga_hs
 
-        input  wire [15:0] vga_data,    //  vga_sink.vga_data
-        output wire        vga_ready,   //          .vga_ready
-        input  wire        vga_valid,   //          .vga_valid
+        input  wire [15:0] vga_data,    //  vga_sink.data
+        output wire        vga_ready,   //          .ready
+        input  wire        vga_valid,   //          .valid
+        input  wire        vga_start,   //          .start
+        input  wire        vga_end,     //          .end
 
         input  wire        reset        //  reset.reset
     );

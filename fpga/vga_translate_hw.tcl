@@ -4,7 +4,7 @@
 
 
 # 
-# vga_dma "VGA DMA" v1.0
+# vga_translate "VGA TRANSLATE" v1.0
 #  2021.11.18.13:09:49
 # 
 # 
@@ -16,15 +16,15 @@ package require -exact qsys 16.1
 
 
 # 
-# module vga_dma
+# module vga_translate
 # 
 set_module_property DESCRIPTION ""
-set_module_property NAME vga_dma
+set_module_property NAME vga_translate
 set_module_property VERSION 1.0
 set_module_property INTERNAL false
 set_module_property OPAQUE_ADDRESS_MAP true
 set_module_property AUTHOR ""
-set_module_property DISPLAY_NAME "VGA DMA"
+set_module_property DISPLAY_NAME "VGA TRANSLATE"
 set_module_property INSTANTIATE_IN_SYSTEM_MODULE true
 set_module_property EDITABLE true
 set_module_property REPORT_TO_TALKBACK false
@@ -36,10 +36,10 @@ set_module_property REPORT_HIERARCHY false
 # file sets
 # 
 add_fileset QUARTUS_SYNTH QUARTUS_SYNTH "" ""
-set_fileset_property QUARTUS_SYNTH TOP_LEVEL vga_dma
+set_fileset_property QUARTUS_SYNTH TOP_LEVEL vga_translate
 set_fileset_property QUARTUS_SYNTH ENABLE_RELATIVE_INCLUDE_PATHS false
 set_fileset_property QUARTUS_SYNTH ENABLE_FILE_OVERWRITE_MODE true
-add_fileset_file vga_dma.v VERILOG PATH src/vga_dma.v TOP_LEVEL_FILE
+add_fileset_file vga_translate.v VERILOG PATH src/vga_translate.v TOP_LEVEL_FILE
 
 
 # 
@@ -80,9 +80,9 @@ set_interface_property mm_slave SVD_ADDRESS_GROUP ""
 
 add_interface_port mm_slave hps_write write Input 1
 add_interface_port mm_slave hps_waitrequest waitrequest Output 1
-add_interface_port mm_slave hps_writedata writedata Input 32
+add_interface_port mm_slave hps_writedata writedata Input 16
 add_interface_port mm_slave hps_address address Input 18
-add_interface_port mm_slave hps_byteenable byteenable Input 4
+add_interface_port mm_slave hps_byteenable byteenable Input 2
 set_interface_assignment mm_slave embeddedsw.configuration.isFlash 0
 set_interface_assignment mm_slave embeddedsw.configuration.isMemoryDevice 0
 set_interface_assignment mm_slave embeddedsw.configuration.isNonVolatileStorage 0
@@ -147,35 +147,44 @@ set_interface_property sdram_master SVD_ADDRESS_GROUP ""
 
 add_interface_port sdram_master sdram_address address Output 26
 add_interface_port sdram_master sdram_byteenable byteenable Output 2
-add_interface_port sdram_master sdram_read read Output 1
-add_interface_port sdram_master sdram_readdata readdata Input 16
-add_interface_port sdram_master sdram_readdatavalid readdatavalid Input 1
 add_interface_port sdram_master sdram_waitrequest waitrequest Input 1
 add_interface_port sdram_master sdram_write write Output 1
 add_interface_port sdram_master sdram_writedata writedata Output 16
-add_interface_port sdram_master sdram_outputenable outputenable Output 1
 
 
 # 
-# connection point pixels_out
+# connection point vga_master
 # 
-add_interface pixels_out avalon_streaming start
-set_interface_property pixels_out associatedClock clk
-set_interface_property pixels_out associatedReset reset
-set_interface_property pixels_out dataBitsPerSymbol 16
-set_interface_property pixels_out errorDescriptor ""
-set_interface_property pixels_out firstSymbolInHighOrderBits true
-set_interface_property pixels_out maxChannel 0
-set_interface_property pixels_out readyLatency 0
-set_interface_property pixels_out ENABLED true
-set_interface_property pixels_out EXPORT_OF ""
-set_interface_property pixels_out PORT_NAME_MAP ""
-set_interface_property pixels_out CMSIS_SVD_VARIABLES ""
-set_interface_property pixels_out SVD_ADDRESS_GROUP ""
+add_interface vga_master avalon start
+set_interface_property vga_master addressUnits SYMBOLS
+set_interface_property vga_master associatedClock clk
+set_interface_property vga_master associatedReset reset
+set_interface_property vga_master bitsPerSymbol 8
+set_interface_property vga_master burstOnBurstBoundariesOnly false
+set_interface_property vga_master burstcountUnits WORDS
+set_interface_property vga_master doStreamReads false
+set_interface_property vga_master doStreamWrites false
+set_interface_property vga_master holdTime 0
+set_interface_property vga_master linewrapBursts false
+set_interface_property vga_master maximumPendingReadTransactions 0
+set_interface_property vga_master maximumPendingWriteTransactions 0
+set_interface_property vga_master readLatency 0
+set_interface_property vga_master readWaitTime 1
+set_interface_property vga_master setupTime 0
+set_interface_property vga_master timingUnits Cycles
+set_interface_property vga_master writeWaitTime 0
+set_interface_property vga_master ENABLED true
+set_interface_property vga_master EXPORT_OF ""
+set_interface_property vga_master PORT_NAME_MAP ""
+set_interface_property vga_master CMSIS_SVD_VARIABLES ""
+set_interface_property vga_master SVD_ADDRESS_GROUP ""
 
-add_interface_port pixels_out pixels_out_data data Output 16
-add_interface_port pixels_out pixels_out_ready ready Input 1
-add_interface_port pixels_out pixels_out_valid valid Output 1
+add_interface_port vga_master vga_address address Output 4
+add_interface_port vga_master vga_byteenable byteenable Output 4
+add_interface_port vga_master vga_waitrequest waitrequest Input 1
+add_interface_port vga_master vga_write write Output 1
+add_interface_port vga_master vga_writedata writedata Output 32
+
 
 
 # 
@@ -192,4 +201,3 @@ set_interface_property vga_frame_ctrl SVD_ADDRESS_GROUP ""
 
 add_interface_port vga_frame_ctrl frame_start frame_start Input 1
 add_interface_port vga_frame_ctrl frame_hold frame_hold Input 1
-
