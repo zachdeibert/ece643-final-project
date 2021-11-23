@@ -2,20 +2,23 @@
 #define ECE643_LIBBUSINESS_BUTTONHANDLER_HPP
 
 #include <chrono>
+#include <ece643/libbusiness/VNCClient.hpp>
 #include <ece643/libhwio/Interrupt.hpp>
 
 namespace ece643 {
     namespace libbusiness {
         class ButtonHandler {
             public:
-                ButtonHandler(libhwio::Interrupt &irq);
+                ButtonHandler(VNCClient &vnc, libhwio::Interrupt &irq);
                 ~ButtonHandler() noexcept(false);
 
                 bool poll();
 
             private:
+                VNCClient &vnc;
                 libhwio::Interrupt &irq;
                 std::chrono::steady_clock::time_point lastIRQ[4];
+                uint32_t down;
         };
     }
 }

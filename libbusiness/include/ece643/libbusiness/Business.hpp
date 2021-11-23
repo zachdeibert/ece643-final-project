@@ -3,6 +3,7 @@
 
 #include <ece643/libbusiness/ButtonHandler.hpp>
 #include <ece643/libbusiness/State.hpp>
+#include <ece643/libbusiness/SwitchHandler.hpp>
 #include <ece643/libbusiness/VNCClient.hpp>
 #include <ece643/libbusiness/VNCServer.hpp>
 #include <ece643/libhwio/HWIO.hpp>
@@ -18,10 +19,11 @@ namespace ece643 {
 
             private:
                 State &state;
-                libhwio::HWIO hwio;
-                ButtonHandler buttons;
                 VNCServer vncServer;
                 VNCClient vncClient;
+                libhwio::HWIO hwio;
+                ButtonHandler buttons;
+                SwitchHandler switches;
         };
     }
 }

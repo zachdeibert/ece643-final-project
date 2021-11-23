@@ -15,6 +15,8 @@ namespace ece643 {
 
                 void poll(std::chrono::microseconds maxDelay);
 
+                void key(bool down, uint32_t code);
+
             private:
                 libhwio::FileDescriptor fd;
                 libhwio::VGA &vga;

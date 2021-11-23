@@ -108,3 +108,13 @@ void VNCClient::poll(microseconds maxDelay) {
         }
     }
 }
+
+void VNCClient::key(bool down, uint32_t code) {
+    uint8_t msg[8];
+    msg[0] = 4;
+    msg[1] = down ? 1 : 0;
+    msg[2] = 0;
+    msg[3] = 0;
+    *((uint32_t *) (msg + 4)) = htonl(code);
+    check(write(fd, msg, 8) - 8);
+}

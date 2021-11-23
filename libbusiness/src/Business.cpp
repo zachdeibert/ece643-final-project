@@ -7,7 +7,26 @@ using namespace std;
 using namespace std::chrono;
 using namespace ece643::libbusiness;
 
-Business::Business(State &state) : state(state), buttons(hwio.interrupt), vncClient(hwio.vga) {
+/*
+ * Controls:
+ *
+ * Select Hotbar - Left 9 switches
+ * Inventory - Leftmost button
+ * Drop - Left center button
+ * Pause - Rightmost button
+ * Attack - Left mouse button
+ * Use Item - Right mouse button
+ * Move - Tilt accelerometer
+ * Jump - Jerk accelerometer up
+ * Sneak - Low accelerometer tilt
+ * Sprint - High accelerometer tilt
+ */
+
+Business::Business(State &state)
+    : state(state),
+      vncClient(hwio.vga),
+      buttons(vncClient, hwio.interrupt),
+      switches(vncClient, hwio.interrupt) {
 }
 
 Business::~Business() noexcept(false) {
@@ -15,18 +34,15 @@ Business::~Business() noexcept(false) {
 
 void Business::run() {
     hwio.interrupt.poll(0xFFFFFFFF);
-    hwio.interrupt.enable(0x000003FF);
-    int switches = 0;
     while (buttons.poll()) {
+        switches.poll();
         uint64_t state = this->state;
         if (state == 0xFFFFFF) {
             break;
         }
         int hours = state / 1000;
         int minutes = (state - hours * 1000) * 3 / 50;
-        hwio.led.set(switches, (hours + 6) % 12, minutes, (hours + 6) % 24 >= 12);
-        switches ^= hwio.interrupt.poll(0x000003FF);
+        hwio.led.set(switches.leds(), (hours + 6) % 12, minutes, (hours + 6) % 24 >= 12);
         vncClient.poll(microseconds(10000));
     }
-    hwio.interrupt.disable(0x000003FF);
 }
