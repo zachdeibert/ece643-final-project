@@ -12,6 +12,7 @@ class TweakInjector : IClassTransformer {
         private val tweaks = arrayOf(
             AudioDownloadSilencerTweak(),
             ControllerInitTweak(),
+            ExitDetectorTweak(),
             ExitOnDeathTweak(),
             ExitOnQuitTweak(),
             ImplTweak(),

@@ -1,5 +1,6 @@
 package ece643.main
 
+import ece643.main.tweaks.ExitDetectorTweak
 import ece643.main.tweaks.ImplTweak
 import ece643.main.tweaks.TimeTweak
 import net.minecraft.launchwrapper.LaunchClassLoader
@@ -7,6 +8,7 @@ import java.io.File
 
 class MinecraftLauncher : AutoCloseable {
     init {
+        ExitDetectorTweak.initContext()
         TimeTweak.initContext()
     }
 
@@ -26,6 +28,13 @@ class MinecraftLauncher : AutoCloseable {
     }.apply {
         start()
     }
+
+    val state: Long
+        get() = if (ExitDetectorTweak.exited) {
+                0xFFFFFF
+            } else {
+                TimeTweak.time
+            }
 
     fun waitFor() {
         thread.join()

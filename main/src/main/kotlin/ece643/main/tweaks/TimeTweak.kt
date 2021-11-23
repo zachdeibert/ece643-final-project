@@ -11,7 +11,7 @@ class TimeTweak : Tweak {
         private val tls = InheritableThreadLocal<Array<Long>>()
 
         val time: Long
-            get() = (6L * 60 * 60 * 1000 + 24L * 60 * 60 * 1000 * tls.get()[0] / 24000) % 24000
+            get() = tls.get()[0] % 24000L
 
         fun setTime(time: Long) {
             tls.get()[0] = time
