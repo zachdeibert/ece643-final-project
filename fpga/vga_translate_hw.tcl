@@ -81,7 +81,7 @@ set_interface_property mm_slave SVD_ADDRESS_GROUP ""
 add_interface_port mm_slave hps_write write Input 1
 add_interface_port mm_slave hps_waitrequest waitrequest Output 1
 add_interface_port mm_slave hps_writedata writedata Input 16
-add_interface_port mm_slave hps_address address Input 18
+add_interface_port mm_slave hps_address address Input 19
 add_interface_port mm_slave hps_byteenable byteenable Input 2
 set_interface_assignment mm_slave embeddedsw.configuration.isFlash 0
 set_interface_assignment mm_slave embeddedsw.configuration.isMemoryDevice 0
