@@ -5,30 +5,27 @@ import org.objectweb.asm.Label
 import org.objectweb.asm.Opcodes
 import org.objectweb.asm.tree.AbstractInsnNode
 import org.objectweb.asm.tree.MethodNode
-import java.awt.Dimension
-import java.awt.Frame
-import java.awt.Robot
-import java.awt.event.InputEvent
-import javax.imageio.ImageIO
 
-class MainTweak : Tweak {
+class TimeTweak : Tweak {
     companion object {
-        fun inject() {
-            ImageIO.setUseCache(false)
-            val frame = Frame.getFrames().last()
-            frame.title = "ECE643 Final Project"
-            frame.size = Dimension(640, 480)
-            val robot = Robot()
-            robot.mouseMove(frame.x + frame.width / 2, frame.y + frame.height / 2)
-            robot.mousePress(InputEvent.BUTTON1_DOWN_MASK)
-            robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK)
+        private val tls = InheritableThreadLocal<Array<Long>>()
+
+        val time: Long
+            get() = (6L * 60 * 60 * 1000 + 24L * 60 * 60 * 1000 * tls.get()[0] / 24000) % 24000
+
+        fun setTime(time: Long) {
+            tls.get()[0] = time
+        }
+
+        fun initContext() {
+            tls.set(arrayOf(0L))
         }
     }
 
-    override val className = "net.minecraft.client.Minecraft"
+    override val className = "si"
 
     override fun matches(method: MethodNode): Boolean {
-        return method.name == "main"
+        return method.desc == "(J)V" && method.name == "a"
     }
 
     override fun transform(method: MethodNode) {
@@ -36,9 +33,10 @@ class MainTweak : Tweak {
         val injectLabel = Label()
         injectCode.visitLabel(injectLabel)
         injectCode.visitLineNumber(9001, injectLabel)
-        val self = MainTweak::class.qualifiedName!!.replace('.', '/')
+        val self = TimeTweak::class.qualifiedName!!.replace('.', '/')
         injectCode.visitFieldInsn(Opcodes.GETSTATIC, self, "Companion", "L${self}\$Companion;")
-        injectCode.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "${self}\$Companion", "inject", "()V")
+        injectCode.visitVarInsn(Opcodes.LLOAD, 1)
+        injectCode.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "${self}\$Companion", "setTime", "(J)V")
         val iterator = method.instructions.iterator()
         while (iterator.hasNext()) {
             val ins = iterator.next() as AbstractInsnNode

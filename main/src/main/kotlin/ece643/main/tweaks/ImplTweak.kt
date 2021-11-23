@@ -7,8 +7,13 @@ import org.objectweb.asm.tree.AbstractInsnNode
 import org.objectweb.asm.tree.InsnNode
 import org.objectweb.asm.tree.MethodInsnNode
 import org.objectweb.asm.tree.MethodNode
+import java.util.*
 
 class ImplTweak : Tweak {
+    companion object {
+        const val worldDir = "ece643-world"
+    }
+
     override val className = "net.minecraft.client.Minecraft"
 
     override fun matches(method: MethodNode): Boolean {
@@ -27,11 +32,11 @@ class ImplTweak : Tweak {
         injectCode.visitVarInsn(Opcodes.ALOAD, 0)
         injectCode.visitMethodInsn(Opcodes.INVOKESPECIAL, "dm", "<init>", "(Lnet/minecraft/client/Minecraft;)V")
         injectCode.visitFieldInsn(Opcodes.PUTFIELD, "net/minecraft/client/Minecraft", "c", "Laes;")
-        injectCode.visitLdcInsn("world")
-        injectCode.visitLdcInsn("World")
+        injectCode.visitLdcInsn(worldDir)
+        injectCode.visitLdcInsn("ECE643 Final Project")
         injectCode.visitTypeInsn(Opcodes.NEW, "yw")
         injectCode.visitInsn(Opcodes.DUP)
-        injectCode.visitLdcInsn(0.toLong())
+        injectCode.visitLdcInsn(Random().nextLong())
         injectCode.visitInsn(Opcodes.ICONST_0)
         injectCode.visitInsn(Opcodes.ICONST_1)
         injectCode.visitInsn(Opcodes.ICONST_0)

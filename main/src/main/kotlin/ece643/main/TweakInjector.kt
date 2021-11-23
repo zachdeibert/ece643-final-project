@@ -12,8 +12,11 @@ class TweakInjector : IClassTransformer {
         private val tweaks = arrayOf(
             AudioDownloadSilencerTweak(),
             ControllerInitTweak(),
+            ExitOnDeathTweak(),
+            ExitOnQuitTweak(),
             ImplTweak(),
             MainTweak(),
+            TimeTweak(),
             UndecoratedWindowTweak(),
             WidthTweak())
     }
@@ -37,9 +40,8 @@ class TweakInjector : IClassTransformer {
         classReader.accept(classNode, ClassReader.EXPAND_FRAMES)
         var any = false
         tweaks.forEach { tweak ->
-            val method = classNode.methods.mapNotNull { it as? MethodNode }.firstOrNull { tweak.matches(it) }
-            if (method != null) {
-                tweak.transform(method)
+            classNode.methods.mapNotNull { it as? MethodNode }.filter { tweak.matches(it) }.map {
+                tweak.transform(it)
                 any = true
             }
         }

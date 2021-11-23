@@ -1,9 +1,9 @@
 application {
     mainClass = "ece643.main.MainKt"
     applicationDefaultJvmArgs = [
-        "-Djava.library.path=/tmp/ece643-minecraft-libs",
         "--illegal-access=debug",
-        "--add-opens", "java.base/java.lang=ALL-UNNAMED"
+        "--add-opens", "java.base/java.lang=ALL-UNNAMED",
+        "-Xmx200M"
     ]
 }
 
