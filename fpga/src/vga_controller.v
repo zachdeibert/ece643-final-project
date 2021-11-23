@@ -50,7 +50,9 @@ module vga_controller(
     assign vga_g = { vga_pixel_color[10:5], (vga_pixel_color[10])? 2'b11: 2'b00 };
     assign vga_b = { vga_pixel_color[4:0], (vga_pixel_color[4])? 3'b111: 3'b000 };
 
-    assign vga_ready = (row_cnt >= ROW_PIXELS || col_cnt >= COL_PIXELS + AFTER_COL) ? 1'b0 : 1'b1;
+    // Ready if either in drawable area or after frame but not at the next frame yet
+    assign vga_ready = ((row_cnt < ROW_PIXELS && col_cnt < COL_PIXELS) ||
+                        (col_cnt >= COL_PIXELS && ~vga_start))? 1'b1 : 1'b0;
 
     // Tell source that we're clearning the fifo and not to load any data yet
     assign frame_hold = (col_cnt >= COL_PIXELS && col_cnt < COL_PIXELS + AFTER_COL) ? 1'b1 : 1'b0;
