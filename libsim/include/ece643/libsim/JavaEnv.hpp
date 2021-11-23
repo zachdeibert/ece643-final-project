@@ -26,6 +26,7 @@ namespace ece643 {
 
                 JNIEnv &jni() noexcept;
                 std::pair<jobject, jmethodID> method(std::string object, std::string method, std::string signature) noexcept;
+                jmethodID method(jobject object, std::string objectClass, std::string method, std::string signature) noexcept;
 
                 void postCall();
 
@@ -36,6 +37,7 @@ namespace ece643 {
                 JNIEnv *env;
                 jobject hwio;
                 std::unordered_map<std::string, std::pair<std::unordered_map<std::string, jmethodID>, jobject>> hwios;
+                std::unordered_map<std::string, jmethodID> methods;
         };
     }
 }

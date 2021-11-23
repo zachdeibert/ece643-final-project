@@ -19,14 +19,14 @@ using namespace ece643::libbusiness;
  * Move - Tilt accelerometer
  * Jump - Jerk accelerometer up
  * Sneak - Low accelerometer tilt
- * Sprint - High accelerometer tilt
  */
 
 Business::Business(State &state)
     : state(state),
       vncClient(hwio.vga),
       buttons(vncClient, hwio.interrupt),
-      switches(vncClient, hwio.interrupt) {
+      switches(vncClient, hwio.interrupt),
+      movement(vncClient, hwio.accelerometer) {
 }
 
 Business::~Business() noexcept(false) {
@@ -36,6 +36,7 @@ void Business::run() {
     hwio.interrupt.poll(0xFFFFFFFF);
     while (buttons.poll()) {
         switches.poll();
+        movement.poll();
         uint64_t state = this->state;
         if (state == 0xFFFFFF) {
             break;

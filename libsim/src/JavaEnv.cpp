@@ -68,6 +68,17 @@ pair<jobject, jmethodID> JavaEnv::method(string object, string method, string si
     return make_pair(obj->second.second, m->second);
 }
 
+jmethodID JavaEnv::method(jobject object, string objectClass, string method, string signature) noexcept {
+    string mangled = signature + to_string(method.size()) + method + objectClass;
+    unordered_map<string, jmethodID>::iterator obj = methods.find(mangled);
+    if (obj == methods.end()) {
+        jclass cls = env->GetObjectClass(object);
+        jmethodID m = env->GetMethodID(cls, method.c_str(), signature.c_str());
+        obj = methods.emplace_hint(obj, mangled, m);
+    }
+    return obj->second;
+}
+
 void JavaEnv::postCall() {
     if (env->ExceptionCheck()) {
         throw JavaException();

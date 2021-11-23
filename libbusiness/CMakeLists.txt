@@ -1,6 +1,7 @@
 add_library(business STATIC
     src/Business.cpp
     src/ButtonHandler.cpp
+    src/MovementController.cpp
     src/SwitchHandler.cpp
     src/VNCClient.cpp
     src/VNCServer.cpp

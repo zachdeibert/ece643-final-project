@@ -2,6 +2,7 @@
 #define ECE643_LIBBUSINESS_BUSINESS_HPP
 
 #include <ece643/libbusiness/ButtonHandler.hpp>
+#include <ece643/libbusiness/MovementController.hpp>
 #include <ece643/libbusiness/State.hpp>
 #include <ece643/libbusiness/SwitchHandler.hpp>
 #include <ece643/libbusiness/VNCClient.hpp>
@@ -24,6 +25,7 @@ namespace ece643 {
                 libhwio::HWIO hwio;
                 ButtonHandler buttons;
                 SwitchHandler switches;
+                MovementController movement;
         };
     }
 }

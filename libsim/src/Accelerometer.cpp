@@ -47,14 +47,17 @@ bool Accelerometer::ready() {
 
 array<int16_t, 3> Accelerometer::read() {
     JavaEnv &j = JavaEnv::get(i2c);
-    pair<jobject, jmethodID> m = j.method("Accelerometer", "read", "()[S");
-    jshortArray arr = (jshortArray) j.jni().CallObjectMethod(m.first, m.second);
-    jshort *data = j.jni().GetShortArrayElements(arr, nullptr);
+    pair<jobject, jmethodID> m = j.method("Accelerometer", "read", "()[Ljava/lang/Short;");
+    jobjectArray arr = (jobjectArray) j.jni().CallObjectMethod(m.first, m.second);
     array<int16_t, 3> ret;
-    ret[0] = data[0];
-    ret[1] = data[1];
-    ret[2] = data[2];
-    j.jni().ReleaseShortArrayElements(arr, data, 0);
+    jmethodID unbox;
+    for (int i = 0; i < 3; ++i) {
+        jobject obj = j.jni().GetObjectArrayElement(arr, i);
+        if (i == 0) {
+            unbox = j.method(obj, "java/lang/Short", "shortValue", "()S");
+        }
+        ret[i] = j.jni().CallShortMethod(obj, unbox);
+    }
     j.postCall();
     return ret;
 }
