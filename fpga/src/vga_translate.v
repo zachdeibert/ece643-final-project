@@ -29,14 +29,31 @@ module vga_translate(
     localparam VGA_COLS = 640;
     localparam VGA_ROWS = 480;
 
-    reg [25:0] pixel_address_mod;
-    wire [25:0] pixel_address_endrow;
+    localparam ROW_LEN	= 8;
+    localparam COL_LEN	= 9;
+
     reg [25:0] current_base_addr;
     reg [18:0] box_end_addr;
 
-    assign hps_waitrequest = (hps_address < 6 || hps_address >= box_end_addr)? 1'b0: sdram_waitrequest;
-    assign sdram_write = (hps_address < 6 || hps_address >= box_end_addr)? 1'b0: hps_write;
-    assign sdram_address = hps_address + pixel_address_mod;
+    reg [ROW_LEN:0] row_addr;
+    wire [COL_LEN:0] col_addr;
+
+    reg [25:0] col_mod;
+
+    assign col_addr = hps_address - col_mod;
+
+    reg skip;
+    always @(posedge clk) begin
+        if (reset) begin
+            skip <= 0;
+        end else begin
+            skip <= ~skip;
+        end
+    end
+
+    assign hps_waitrequest = (hps_address < 6 || hps_address >= box_end_addr)? 1'b0: sdram_waitrequest || skip;
+    assign sdram_write = (hps_address < 6 || hps_address >= box_end_addr)? 1'b0: hps_write && ~skip;
+    assign sdram_address = current_base_addr + {row_addr,col_addr,1'b0};
     assign sdram_byteenable = hps_byteenable;
     assign sdram_writedata = hps_writedata;
 
@@ -52,12 +69,11 @@ module vga_translate(
 
     reg have_new_box;
 
-    assign pixel_address_endrow = pixel_address_mod + box_h;
-
     always @(posedge clk) begin
         if(reset) begin
             current_base_addr <= 'h0;
-            pixel_address_mod <= 'h0;
+            row_addr <= 'h0;
+            col_mod <= 'h0;
         end else if (hps_write && ~hps_waitrequest) begin
             if(hps_address == 0) begin
                 if(hps_byteenable[0])
@@ -77,16 +93,17 @@ module vga_translate(
             end else if(hps_address == 3) begin
                 if(hps_byteenable[0])
                     box_h[7:0] <= hps_writedata[7:0];
-                if(hps_byteenable[1]) begin
+                if(hps_byteenable[1])
                     box_h[15:8] <= hps_writedata[15:8];
-
-                    // This is where the start end end of box will be
-                    pixel_address_mod <= current_base_addr + box_x + box_y * VGA_COLS - 6;
-                    box_end_addr <= current_base_addr + box_x + box_y * VGA_COLS + box_w * VGA_COLS + box_h * VGA_COLS - 6;
-                end
-            end else if(sdram_address == pixel_address_endrow - 1) begin 
+            end else if(hps_address == 4) begin
+                // This is where the start end end of box will be
+                col_mod <= current_base_addr + box_x - 6;
+                box_end_addr <= box_x + box_y * VGA_COLS + box_w * VGA_COLS + box_h * VGA_COLS + 6;
+                row_addr <= box_y;
+            end else if(sdram_address + col_mod == box_w - 1) begin 
                 if(hps_byteenable[1]) begin
-                    pixel_address_mod <= pixel_address_mod + VGA_COLS;
+                    col_mod <= col_mod + box_w;
+                    row_addr <= row_addr + 1;
                 end
             end else if(sdram_address == box_end_addr - 1) begin
                 have_new_box <= 1'b1;

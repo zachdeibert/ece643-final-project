@@ -38,9 +38,46 @@ module vga_controller(
     localparam ROW_PIXELS = 640;
     localparam COL_PIXELS = 480;
 
-    assign vga_clk = vga_clk_in;
+    wire end_of_frame;
+    localparam STATE_SYNC = 0;
+    localparam STATE_SHOW = 1;
+    reg state;
+    reg next_state;
+    wire visible_area;
 
-    reg [18:0] vga_in_pixel_addr;
+    always @(posedge vga_clk_in)
+    begin
+        if (reset == 1'b1)
+            state <= STATE_SYNC;
+        else
+            state <= next_state;
+    end
+
+    always @(*) begin
+        if(reset) begin
+            next_state <= STATE_SYNC;
+        end else begin
+            case(state)
+                STATE_SYNC: begin
+                    if (vga_valid & vga_start)
+                        next_state <= STATE_SHOW;
+                    else
+                        next_state <= STATE_SYNC;
+                end
+                STATE_SHOW: begin
+                    if (end_of_frame)
+                        next_state <= STATE_SYNC;
+                    else
+                        next_state <= STATE_SHOW;
+                end
+                default: begin
+                    next_state <= STATE_SYNC;
+                end
+            endcase
+        end
+    end
+
+    assign vga_clk = vga_clk_in;
 
     reg [9:0] row_cnt;
     reg [9:0] col_cnt;
@@ -51,11 +88,12 @@ module vga_controller(
     assign vga_b = { vga_pixel_color[4:0], (vga_pixel_color[4])? 3'b111: 3'b000 };
 
     // Ready if either in drawable area or after frame but not at the next frame yet
-    assign vga_ready = ((row_cnt < ROW_PIXELS && col_cnt < COL_PIXELS) ||
-                        (col_cnt >= COL_PIXELS && ~vga_start))? 1'b1 : 1'b0;
+    assign vga_ready = (state == STATE_SYNC) ? vga_valid & ~vga_start : visible_area;
+    assign visible_area = (row_cnt < ROW_PIXELS && col_cnt < COL_PIXELS)? 1'b1 : 1'b0;
 
-    // Tell source that we're clearning the fifo and not to load any data yet
-    assign frame_hold = (col_cnt >= COL_PIXELS && col_cnt < COL_PIXELS + AFTER_COL) ? 1'b1 : 1'b0;
+    assign end_of_frame = (row_cnt == ROW_PIXELS - 1 && col_cnt == COL_PIXELS - 1)? 1'b1 : 1'b0;
+
+    assign frame_hold = 1'b0;
     assign frame_start = ~vga_vs;
 
     always @(posedge vga_clk_in) begin
@@ -75,7 +113,6 @@ module vga_controller(
         if (reset) begin
             row_cnt <= 0;
             col_cnt <= 0;
-            vga_in_pixel_addr <= 0;
         end else begin
             if (row_cnt >= ROW_CNT-1) begin
                 row_cnt <= 0;
@@ -86,11 +123,6 @@ module vga_controller(
                 end
             end else begin
                 row_cnt <= row_cnt + 1;
-                if (row_cnt < ROW_PIXELS)
-                    if (col_cnt < COL_PIXELS)
-                        vga_in_pixel_addr <= vga_in_pixel_addr + 1;
-                else
-                    vga_in_pixel_addr <= 0;
             end
         end
     end
@@ -119,7 +151,7 @@ module vga_controller(
         end 
     end
 
-    assign vga_blank_n = 1'b1;
+    assign vga_blank_n = ( vga_ready && row_cnt < ROW_PIXELS && col_cnt < COL_PIXELS) ? 1'b1: 1'b0;
     assign vga_sync_n = 1'b1;
 
 endmodule

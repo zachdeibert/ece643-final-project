@@ -277,6 +277,11 @@
    internal="system_pll.ref_clk"
    type="clock"
    dir="end" />
+ <interface
+   name="system_pll_sdram_clk"
+   internal="system_pll.sdram_clk"
+   type="clock"
+   dir="start" />
  <interface name="vga" internal="vga_controller.vga" type="conduit" dir="end" />
  <interface
    name="vga_pll_refclk"
@@ -881,7 +886,7 @@
   <parameter name="ENABLE_EXPLICIT_MAXCHANNEL" value="false" />
   <parameter name="ERROR_WIDTH" value="0" />
   <parameter name="EXPLICIT_MAXCHANNEL" value="0" />
-  <parameter name="FIFO_DEPTH" value="64" />
+  <parameter name="FIFO_DEPTH" value="128" />
   <parameter name="RD_SYNC_DEPTH" value="3" />
   <parameter name="SYMBOLS_PER_BEAT" value="1" />
   <parameter name="USE_IN_FILL_LEVEL" value="0" />
@@ -1193,16 +1198,6 @@
  <connection
    kind="clock"
    version="20.1"
-   start="system_pll.sdram_clk"
-   end="video_pixel_buffer_dma_0.clk" />
- <connection
-   kind="clock"
-   version="20.1"
-   start="system_pll.sdram_clk"
-   end="vga_fifo.in_clk" />
- <connection
-   kind="clock"
-   version="20.1"
    start="system_pll.sys_clk"
    end="vga_controller.clk" />
  <connection
@@ -1239,7 +1234,17 @@
    kind="clock"
    version="20.1"
    start="system_pll.sys_clk"
+   end="video_pixel_buffer_dma_0.clk" />
+ <connection
+   kind="clock"
+   version="20.1"
+   start="system_pll.sys_clk"
    end="hps.h2f_axi_clock" />
+ <connection
+   kind="clock"
+   version="20.1"
+   start="system_pll.sys_clk"
+   end="vga_fifo.in_clk" />
  <connection
    kind="conduit"
    version="20.1"
