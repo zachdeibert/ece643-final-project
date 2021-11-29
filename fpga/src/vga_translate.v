@@ -40,19 +40,10 @@ module vga_translate(
 
     reg [25:0] col_mod;
 
-    assign col_addr = hps_address - col_mod;
+    assign col_addr = hps_address + col_mod;
 
-    reg skip;
-    always @(posedge clk) begin
-        if (reset) begin
-            skip <= 0;
-        end else begin
-            skip <= ~skip;
-        end
-    end
-
-    assign hps_waitrequest = (hps_address < 6 || hps_address >= box_end_addr)? 1'b0: sdram_waitrequest || skip;
-    assign sdram_write = (hps_address < 6 || hps_address >= box_end_addr)? 1'b0: hps_write && ~skip;
+    assign hps_waitrequest = (hps_address < 6 || hps_address >= box_end_addr)? 1'b0: sdram_waitrequest;
+    assign sdram_write = (hps_address < 6 || hps_address >= box_end_addr)? 1'b0: hps_write;
     assign sdram_address = current_base_addr + {row_addr,col_addr,1'b0};
     assign sdram_byteenable = hps_byteenable;
     assign sdram_writedata = hps_writedata;
@@ -97,15 +88,17 @@ module vga_translate(
                     box_h[15:8] <= hps_writedata[15:8];
             end else if(hps_address == 4) begin
                 // This is where the start end end of box will be
-                col_mod <= current_base_addr + box_x - 6;
-                box_end_addr <= box_x + box_y * VGA_COLS + box_w * VGA_COLS + box_h * VGA_COLS + 6;
-                row_addr <= box_y;
-            end else if(sdram_address + col_mod == box_w - 1) begin 
+                if(hps_byteenable[1]) begin
+                    col_mod <= current_base_addr + box_x - 6;
+                    box_end_addr <= box_x + box_y * VGA_COLS + box_w + box_h * VGA_COLS + 6;
+                    row_addr <= box_y;
+                end
+            end else if(col_addr >= box_x + box_w - 1) begin 
                 if(hps_byteenable[1]) begin
                     col_mod <= col_mod + box_w;
                     row_addr <= row_addr + 1;
                 end
-            end else if(sdram_address == box_end_addr - 1) begin
+            end else if(hps_address == box_end_addr - 1) begin
                 have_new_box <= 1'b1;
             end
         end
