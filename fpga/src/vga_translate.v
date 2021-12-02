@@ -39,12 +39,16 @@ module vga_translate(
     wire [COL_LEN:0] col_addr;
 
     reg [25:0] col_mod;
+    reg [25:0] end_col_addr;
 
-    assign col_addr = hps_address + col_mod;
+    assign col_addr = hps_address - col_mod + box_x;
 
-    assign hps_waitrequest = (hps_address < 6 || hps_address >= box_end_addr)? 1'b0: sdram_waitrequest;
-    assign sdram_write = (hps_address < 6 || hps_address >= box_end_addr)? 1'b0: hps_write;
-    assign sdram_address = current_base_addr + {row_addr,col_addr,1'b0};
+    assign hps_waitrequest = (hps_address < 6)? 1'b0: sdram_waitrequest;
+    assign sdram_write = (hps_address < 6)? 1'b0: hps_write;
+//    assign sdram_address = current_base_addr + {row_addr,col_addr,1'b0};
+    assign sdram_address = current_base_addr +
+                           {(row_addr < VGA_ROWS)? row_addr: 9'b0,
+                            (col_addr < VGA_COLS)? col_addr: 10'b0,1'b0};
     assign sdram_byteenable = hps_byteenable;
     assign sdram_writedata = hps_writedata;
 
@@ -58,13 +62,16 @@ module vga_translate(
     reg [15:0] box_w;
     reg [15:0] box_h;
 
-    reg have_new_box;
-
     always @(posedge clk) begin
         if(reset) begin
             current_base_addr <= 'h0;
             row_addr <= 'h0;
             col_mod <= 'h0;
+            box_x <= 0;
+            box_y <= 0;
+            box_w <= 0;
+            box_h <= 0;
+            end_col_addr <= 0;
         end else if (hps_write && ~hps_waitrequest) begin
             if(hps_address == 0) begin
                 if(hps_byteenable[0])
@@ -87,38 +94,20 @@ module vga_translate(
                 if(hps_byteenable[1])
                     box_h[15:8] <= hps_writedata[15:8];
             end else if(hps_address == 4) begin
-                // This is where the start end end of box will be
+                // Setup variables based on box definition
                 if(hps_byteenable[1]) begin
-                    col_mod <= current_base_addr + box_x - 6;
-                    box_end_addr <= box_x + box_y * VGA_COLS + box_w + box_h * VGA_COLS + 6;
+                    col_mod <= 26'd6;
+                    end_col_addr <= 6 + box_w;
                     row_addr <= box_y;
                 end
-            end else if(col_addr >= box_x + box_w - 1) begin 
+            end else if(hps_address >= 6 && hps_address == end_col_addr - 1) begin 
                 if(hps_byteenable[1]) begin
+                    end_col_addr <= end_col_addr + box_w;
                     col_mod <= col_mod + box_w;
                     row_addr <= row_addr + 1;
                 end
-            end else if(hps_address == box_end_addr - 1) begin
-                have_new_box <= 1'b1;
             end
         end
     end
-
-    reg last_frame_hold;
-
-    reg need_new_buffer;
-
-    always @(posedge clk) begin
-        if(reset) begin
-            last_frame_hold <= 1'b0;
-        end else begin
-            last_frame_hold <= frame_hold;
-            if(frame_hold && ~last_frame_hold) begin
-            end
-        end
-    end
-
-    wire frame_posedge;
-    assign frame_posedge = ~last_frame_hold && frame_hold;
 
 endmodule
