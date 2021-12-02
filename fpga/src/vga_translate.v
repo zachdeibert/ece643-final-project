@@ -7,7 +7,7 @@ module vga_translate(
         input  wire [1:0]  hps_byteenable,  //       .byteenable
         output wire        hps_waitrequest, //       .waitrequest
 
-        output wire [25:0] sdram_address,       // sdram.address
+        output wire [31:0] sdram_address,       // sdram.address
         output wire [1:0]  sdram_byteenable,    //      .byteenable
         input  wire        sdram_waitrequest,   //      .waitrequest
         output wire        sdram_write,         //      .write
@@ -32,23 +32,25 @@ module vga_translate(
     localparam ROW_LEN	= 8;
     localparam COL_LEN	= 9;
 
-    reg [25:0] current_base_addr;
-    reg [18:0] box_end_addr;
+    reg [31:0] current_base_addr;
 
-    reg [ROW_LEN:0] row_addr;
+    reg [ROW_LEN:0] row_addr_pre;
+    wire [ROW_LEN:0] row_addr;
     wire [COL_LEN:0] col_addr;
+    wire [COL_LEN:0] col_addr_pre;
 
-    reg [25:0] col_mod;
-    reg [25:0] end_col_addr;
+    reg [31:0] col_mod;
+    reg [31:0] end_col_addr;
 
-    assign col_addr = hps_address - col_mod + box_x;
+    assign row_addr = (row_addr_pre < VGA_ROWS) ? row_addr_pre : 0;
+
+    assign col_addr_pre = hps_address - col_mod + box_x;
+    assign col_addr = (col_addr_pre < VGA_COLS) ? col_addr_pre : 0;
 
     assign hps_waitrequest = (hps_address < 6)? 1'b0: sdram_waitrequest;
     assign sdram_write = (hps_address < 6)? 1'b0: hps_write;
 //    assign sdram_address = current_base_addr + {row_addr,col_addr,1'b0};
-    assign sdram_address = current_base_addr +
-                           {(row_addr < VGA_ROWS)? row_addr: 9'b0,
-                            (col_addr < VGA_COLS)? col_addr: 10'b0,1'b0};
+    assign sdram_address = current_base_addr + {row_addr,col_addr,1'b0};
     assign sdram_byteenable = hps_byteenable;
     assign sdram_writedata = hps_writedata;
 
@@ -65,7 +67,7 @@ module vga_translate(
     always @(posedge clk) begin
         if(reset) begin
             current_base_addr <= 'h0;
-            row_addr <= 'h0;
+            row_addr_pre <= 'h0;
             col_mod <= 'h0;
             box_x <= 0;
             box_y <= 0;
@@ -96,15 +98,16 @@ module vga_translate(
             end else if(hps_address == 4) begin
                 // Setup variables based on box definition
                 if(hps_byteenable[1]) begin
-                    col_mod <= 26'd6;
+                    col_mod <= 32'd6;
                     end_col_addr <= 6 + box_w;
-                    row_addr <= box_y;
+                    row_addr_pre <= box_y;
+                    current_base_addr <= 'h0;
                 end
             end else if(hps_address >= 6 && hps_address == end_col_addr - 1) begin 
                 if(hps_byteenable[1]) begin
                     end_col_addr <= end_col_addr + box_w;
                     col_mod <= col_mod + box_w;
-                    row_addr <= row_addr + 1;
+                    row_addr_pre <= row_addr + 1;
                 end
             end
         end

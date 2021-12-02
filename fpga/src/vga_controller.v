@@ -77,7 +77,7 @@ module vga_controller(
         end
     end
 
-    assign vga_clk = vga_clk_in;
+    assign vga_clk = ~vga_clk_in;
 
     reg [9:0] row_cnt;
     reg [9:0] col_cnt;
