@@ -35,21 +35,16 @@ module vga_translate(
     reg [31:0] current_base_addr;
 
     reg [ROW_LEN:0] row_addr_pre;
+    reg [COL_LEN:0] col_addr_pre;
+
     wire [ROW_LEN:0] row_addr;
     wire [COL_LEN:0] col_addr;
-    wire [COL_LEN:0] col_addr_pre;
 
-    reg [31:0] col_mod;
-    reg [31:0] end_col_addr;
-
-    assign row_addr = (row_addr_pre < VGA_ROWS) ? row_addr_pre : 0;
-
-    assign col_addr_pre = hps_address - col_mod + box_x;
     assign col_addr = (col_addr_pre < VGA_COLS) ? col_addr_pre : 0;
+    assign row_addr = (row_addr_pre < VGA_ROWS) ? row_addr_pre : 0;
 
     assign hps_waitrequest = (hps_address < 6)? 1'b0: sdram_waitrequest;
     assign sdram_write = (hps_address < 6)? 1'b0: hps_write;
-//    assign sdram_address = current_base_addr + {row_addr,col_addr,1'b0};
     assign sdram_address = current_base_addr + {row_addr,col_addr,1'b0};
     assign sdram_byteenable = hps_byteenable;
     assign sdram_writedata = hps_writedata;
@@ -68,46 +63,47 @@ module vga_translate(
         if(reset) begin
             current_base_addr <= 'h0;
             row_addr_pre <= 'h0;
-            col_mod <= 'h0;
+            col_addr_pre <= 'h0;
             box_x <= 0;
             box_y <= 0;
             box_w <= 0;
             box_h <= 0;
-            end_col_addr <= 0;
         end else if (hps_write && ~hps_waitrequest) begin
             if(hps_address == 0) begin
                 if(hps_byteenable[0])
-                    box_x[7:0] <= hps_writedata[7:0];
+                    box_x[15:8] <= hps_writedata[7:0];
                 if(hps_byteenable[1])
-                    box_x[15:8] <= hps_writedata[15:8];
+                    box_x[7:0] <= hps_writedata[15:8];
             end else if(hps_address == 1) begin
                 if(hps_byteenable[0])
-                    box_y[7:0] <= hps_writedata[7:0];
+                    box_y[15:8] <= hps_writedata[7:0];
                 if(hps_byteenable[1])
-                    box_y[15:8] <= hps_writedata[15:8];
+                    box_y[7:0] <= hps_writedata[15:8];
             end else if(hps_address == 2) begin
                 if(hps_byteenable[0])
-                    box_w[7:0] <= hps_writedata[7:0];
+                    box_w[15:8] <= hps_writedata[7:0];
                 if(hps_byteenable[1])
-                    box_w[15:8] <= hps_writedata[15:8];
+                    box_w[7:0] <= hps_writedata[15:8];
             end else if(hps_address == 3) begin
                 if(hps_byteenable[0])
-                    box_h[7:0] <= hps_writedata[7:0];
+                    box_h[15:8] <= hps_writedata[7:0];
                 if(hps_byteenable[1])
-                    box_h[15:8] <= hps_writedata[15:8];
+                    box_h[7:0] <= hps_writedata[15:8];
             end else if(hps_address == 4) begin
                 // Setup variables based on box definition
                 if(hps_byteenable[1]) begin
-                    col_mod <= 32'd6;
-                    end_col_addr <= 6 + box_w;
                     row_addr_pre <= box_y;
+                    col_addr_pre <= box_x;
                     current_base_addr <= 'h0;
                 end
-            end else if(hps_address >= 6 && hps_address == end_col_addr - 1) begin 
+            end else if(hps_address >= 6) begin 
                 if(hps_byteenable[1]) begin
-                    end_col_addr <= end_col_addr + box_w;
-                    col_mod <= col_mod + box_w;
-                    row_addr_pre <= row_addr + 1;
+                    if(col_addr_pre >= box_w + box_x - 1) begin
+                        row_addr_pre <= row_addr + 1;
+                        col_addr_pre <= box_x;
+                    end else begin
+                        col_addr_pre <= col_addr_pre + 1;
+                    end
                 end
             end
         end
