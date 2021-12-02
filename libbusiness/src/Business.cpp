@@ -11,14 +11,23 @@ using namespace ece643::libbusiness;
  * Controls:
  *
  * Select Hotbar - Left 9 switches
- * Inventory - Leftmost button
- * Drop - Left center button
+ * Mode Select - Rightmost switch
+ * Attack - Leftmost button
+ * Inventory - Left center button
+ * Debug - Right center button
  * Pause - Rightmost button
- * Attack - Left mouse button
- * Use Item - Right mouse button
+ *
+ * Move Mode:
+ *
  * Move - Tilt accelerometer
  * Jump - Jerk accelerometer up
  * Sneak - Low accelerometer tilt
+ * Drop - Active switch
+ *
+ * Pan Mode:
+ *
+ * Pan - Tilt accelerometer
+ * Use Item - Active switch
  */
 
 Business::Business(State &state)
@@ -26,7 +35,7 @@ Business::Business(State &state)
       vncClient(hwio.vga),
       buttons(vncClient, hwio.interrupt),
       switches(vncClient, hwio.interrupt),
-      movement(vncClient, hwio.accelerometer) {
+      movement(vncClient, hwio.accelerometer, buttons, switches) {
 }
 
 Business::~Business() noexcept(false) {

@@ -1,17 +1,21 @@
 #include <array>
+#include <chrono>
 #include <math.h>
 #include <stdint.h>
 #define XK_MISCELLANY
 #include <X11/keysymdef.h>
+#include <ece643/libbusiness/ButtonHandler.hpp>
 #include <ece643/libbusiness/MovementController.hpp>
+#include <ece643/libbusiness/SwitchHandler.hpp>
 #include <ece643/libbusiness/VNCClient.hpp>
 #include <ece643/libhwio/Accelerometer.hpp>
 
 using namespace std;
+using namespace std::chrono;
 using namespace ece643::libbusiness;
 using namespace ece643::libhwio;
 
-MovementController::MovementController(VNCClient &vnc, Accelerometer &accel) : vnc(vnc), accel(accel), sdown(0), xdown(0), ydown(0), zdown(0) {
+MovementController::MovementController(VNCClient &vnc, Accelerometer &accel, ButtonHandler &buttons, SwitchHandler &switches) : vnc(vnc), accel(accel), buttons(buttons), switches(switches), state(Normal), sdown(0), xdown(0), ydown(0), zdown(0), lastBtn(0), moved(false), mx(320), my(240) {
     accel.enable();
 }
 
@@ -20,6 +24,44 @@ MovementController::~MovementController() noexcept(false) {
 }
 
 void MovementController::poll() {
+    if (state != Normal) {
+        steady_clock::time_point now = steady_clock::now();
+        if (now > nextState) {
+            switch (state) {
+                case PauseDown:
+                    vnc.key(true, XK_Escape);
+                    break;
+                case PauseUp:
+                    vnc.key(false, XK_Escape);
+                    break;
+                case MouseSet:
+                    vnc.mouse(0, 320, 240);
+                    break;
+                case ResumeDown:
+                    vnc.key(true, XK_Escape);
+                    break;
+                case ResumeUp:
+                    vnc.key(false, XK_Escape);
+                    moved = true;
+                    break;
+            }
+            state = (State) (state + 1);
+            nextState = now + milliseconds(100);
+        }
+        return;
+    }
+    uint8_t btn = 0;
+    if (buttons.attack()) {
+        btn |= 0x01;
+    }
+    if (switches.use()) {
+        btn |= 0x04;
+    }
+    if (btn != lastBtn || moved) {
+        lastBtn = btn;
+        moved = false;
+        vnc.mouse(btn, mx, my);
+    }
     if (!accel.ready()) {
         return;
     }
@@ -32,6 +74,23 @@ void MovementController::poll() {
     y /= mag;
     z /= mag;
     double m = sqrt(x * x + y * y);
+    if (switches.pan()) {
+        if (m * mag > 100) {
+            uint16_t dx = x * mag / 100;
+            uint16_t dy = y * mag / 100;
+            mx += dx;
+            my += dy;
+            if (mx < 50 || mx >= 640 - 50 || my < 50 || my >= 480 - 50) {
+                nextState = steady_clock::now();
+                state = PauseDown;
+                mx = 320 + dx;
+                my = 240 + dy;
+            } else {
+                moved = true;
+            }
+        }
+        return;
+    }
     if (m < z) {
         if (xdown) {
             vnc.key(false, xdown);

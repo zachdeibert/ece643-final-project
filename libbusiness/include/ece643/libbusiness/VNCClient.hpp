@@ -16,6 +16,7 @@ namespace ece643 {
                 void poll(std::chrono::microseconds maxDelay);
 
                 void key(bool down, uint32_t code);
+                void mouse(uint8_t buttons, uint16_t x, uint16_t y);
 
             private:
                 libhwio::FileDescriptor fd;

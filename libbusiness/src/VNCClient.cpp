@@ -118,3 +118,12 @@ void VNCClient::key(bool down, uint32_t code) {
     *((uint32_t *) (msg + 4)) = htonl(code);
     check(write(fd, msg, 8) - 8);
 }
+
+void VNCClient::mouse(uint8_t buttons, uint16_t x, uint16_t y) {
+    uint8_t msg[6];
+    msg[0] = 5;
+    msg[1] = buttons;
+    *((uint16_t *) (msg + 2)) = htons(x);
+    *((uint16_t *) (msg + 4)) = htons(y);
+    check(write(fd, msg, 6) - 6);
+}

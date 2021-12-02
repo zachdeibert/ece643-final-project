@@ -5,12 +5,12 @@
 using namespace ece643::libbusiness;
 using namespace ece643::libhwio;
 
-SwitchHandler::SwitchHandler(VNCClient &vnc, Interrupt &irq) : vnc(vnc), irq(irq), led(0), down(0) {
-    irq.enable(0x000003FE);
+SwitchHandler::SwitchHandler(VNCClient &vnc, Interrupt &irq) : vnc(vnc), irq(irq), led(0x00000200), down(0), rightClick(false) {
+    irq.enable(0x000003FF);
 }
 
 SwitchHandler::~SwitchHandler() noexcept(false) {
-    irq.disable(0x000003FE);
+    irq.disable(0x000003FF);
 }
 
 void SwitchHandler::poll() {
@@ -18,13 +18,26 @@ void SwitchHandler::poll() {
         vnc.key(false, down);
         down = 0;
     }
-    int irq = this->irq.poll(0x000003FE);
-    for (int i = 1; i < 10; ++i) {
+    int irq = this->irq.poll(0x000003FF);
+    for (int i = 0; i < 10; ++i) {
         int mask = 1 << i;
         if (irq & mask) {
-            led = mask;
-            down = '0' + (10 - i) % 10;
-            vnc.key(true, down);
+            if (i > 0) {
+                if (led & mask) {
+                    if (pan()) {
+                        rightClick = true;
+                    } else {
+                        down = 'q';
+                        vnc.key(true, down);
+                    }
+                } else {
+                    led = ((led & 1) | mask);
+                    down = '0' + (10 - i) % 10;
+                    vnc.key(true, down);
+                }
+            } else {
+                led ^= 1;
+            }
             break;
         }
     }
@@ -32,4 +45,17 @@ void SwitchHandler::poll() {
 
 int SwitchHandler::leds() const noexcept {
     return led;
+}
+
+bool SwitchHandler::pan() const noexcept {
+    return led & 1;
+}
+
+bool SwitchHandler::use() noexcept {
+    if (rightClick) {
+        rightClick = false;
+        return true;
+    } else {
+        return false;
+    }
 }

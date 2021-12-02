@@ -13,12 +13,13 @@ namespace ece643 {
                 ~ButtonHandler() noexcept(false);
 
                 bool poll();
+                bool attack() const noexcept;
 
             private:
                 VNCClient &vnc;
                 libhwio::Interrupt &irq;
                 std::chrono::steady_clock::time_point lastIRQ[4];
-                uint32_t down;
+                bool down[4];
         };
     }
 }

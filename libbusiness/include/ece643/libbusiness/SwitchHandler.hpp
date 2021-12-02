@@ -14,12 +14,15 @@ namespace ece643 {
 
                 void poll();
                 int leds() const noexcept;
+                bool pan() const noexcept;
+                bool use() noexcept;
 
             private:
                 VNCClient &vnc;
                 libhwio::Interrupt &irq;
                 int led;
                 uint32_t down;
+                bool rightClick;
         };
     }
 }
