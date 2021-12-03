@@ -74,17 +74,17 @@ void MovementController::poll() {
     y /= mag;
     z /= mag;
     double m = sqrt(x * x + y * y);
-    if (switches.pan()) {
+    if (switches.pan() && state == Normal) {
         if (m * mag > 100) {
-            uint16_t dx = x * mag / 100;
-            uint16_t dy = y * mag / 100;
+            uint16_t dx = x * mag / 200;
+            uint16_t dy = y * mag / 200;
             mx += dx;
             my += dy;
             if (mx < 50 || mx >= 640 - 50 || my < 50 || my >= 480 - 50) {
                 nextState = steady_clock::now();
                 state = PauseDown;
-                mx = 320 + dx;
-                my = 240 + dy;
+                mx = 320;
+                my = 240;
             } else {
                 moved = true;
             }
