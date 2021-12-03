@@ -15,6 +15,7 @@ class TweakInjector : IClassTransformer {
             ExitDetectorTweak(),
             ExitOnDeathTweak(),
             ExitOnQuitTweak(),
+            ImageDownloadSilencerTweak(),
             ImplTweak(),
             MainTweak(),
             TimeTweak(),
