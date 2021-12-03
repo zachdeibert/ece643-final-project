@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.0)
 project(ece643-final)
 
+file(WRITE "${CMAKE_BINARY_DIR}/.gitignore" "/*")
+
 set(CMAKE_BUILD_TYPE Debug)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-psabi")
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
