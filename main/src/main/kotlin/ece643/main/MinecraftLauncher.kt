@@ -5,6 +5,7 @@ import ece643.main.tweaks.ImplTweak
 import ece643.main.tweaks.TimeTweak
 import net.minecraft.launchwrapper.LaunchClassLoader
 import java.io.File
+import java.io.FileOutputStream
 
 class MinecraftLauncher : AutoCloseable {
     init {
@@ -23,6 +24,9 @@ class MinecraftLauncher : AutoCloseable {
         val workdirMethod = clazz.getMethod("b")
         val workdir = workdirMethod.invoke(null) as File
         File(File(workdir, "saves"), ImplTweak.worldDir).deleteRecursively()
+        FileOutputStream(File(workdir, "options.txt")).use {
+            MinecraftLauncher::class.java.getResourceAsStream("options.txt").copyTo(it)
+        }
         val mainMethod = clazz.getMethod("main", Array<String>::class.java)
         mainMethod.invoke(null, tweaker.launchArguments)
     }.apply {
