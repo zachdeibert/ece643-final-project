@@ -30,6 +30,7 @@ if (CMAKE_SYSTEM_PROCESSOR STREQUAL arm)
         Threads::Threads
     )
 
+    configure_file(src/Clean.sh "${CMAKE_BINARY_DIR}/Clean.sh")
     configure_file(src/Upload.sh "${CMAKE_BINARY_DIR}/Upload.sh")
 
     add_dependencies(downloader docker kernel)
