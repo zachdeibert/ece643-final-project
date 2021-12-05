@@ -4,8 +4,8 @@ EXPOSE 5900
 ENV DISPLAY=:2
 
 COPY @QEMU_ARM_NAME@ @QEMU_ARM@
-RUN DEBIAN_FRONTEND="noninteractive" apt-get update -y ;\
-    apt-get install -y tigervnc-standalone-server openjdk-11-jre mesa-utils liblwjgl-java ;\
+RUN DEBIAN_FRONTEND="noninteractive" apt-get update -y &&\
+    apt-get install -y tigervnc-standalone-server openjdk-11-jre mesa-utils liblwjgl-java &&\
     rm -rf /var/lib/apt/lists/*
 
 ENTRYPOINT /opt/ece643-final-project/bin/main
