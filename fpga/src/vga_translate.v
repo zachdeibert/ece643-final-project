@@ -40,11 +40,13 @@ module vga_translate(
     wire [ROW_LEN:0] row_addr;
     wire [COL_LEN:0] col_addr;
 
+    reg blocked;
+
     assign col_addr = (col_addr_pre < VGA_COLS) ? col_addr_pre : 0;
     assign row_addr = (row_addr_pre < VGA_ROWS) ? row_addr_pre : 0;
 
-    assign hps_waitrequest = (hps_address < 6)? 1'b0: sdram_waitrequest;
-    assign sdram_write = (hps_address < 6)? 1'b0: hps_write;
+    assign hps_waitrequest = (blocked)? 1'b1: (hps_address < 6)? 1'b0: sdram_waitrequest;
+    assign sdram_write = (blocked)? 1'b0: (hps_address < 6)? 1'b0: hps_write;
     assign sdram_address = current_base_addr + {row_addr,col_addr,1'b0};
     assign sdram_byteenable = hps_byteenable;
     assign sdram_writedata = hps_writedata;
@@ -109,4 +111,28 @@ module vga_translate(
         end
     end
 
+    reg [7:0] cnt;
+    reg counting;
+
+    // Count the number of sucessful writes, then wait for 32 clocks every 32 writes
+    always @(posedge clk) begin
+        if(reset) begin
+            cnt <= 0;
+            blocked <= 1'b0;
+        end begin
+            if(blocked) begin
+                cnt <= cnt + 1;
+                if(cnt >= 120) begin
+                    blocked <= 0;
+                    cnt <= 0;
+                end 
+            end else if(hps_write && ~hps_waitrequest) begin
+                cnt <= cnt + 1;
+                if(cnt >= 8) begin
+                    blocked <= 1'b1;
+                    cnt <= 0;
+                end
+            end
+        end
+    end
 endmodule
