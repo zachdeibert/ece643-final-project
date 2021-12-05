@@ -75,9 +75,9 @@ void MovementController::poll() {
     z /= mag;
     double m = sqrt(x * x + y * y);
     if (switches.pan() && state == Normal) {
-        if (m * mag > 100) {
-            uint16_t dx = x * mag / 200;
-            uint16_t dy = y * mag / 200;
+        if (m * mag > 50) {
+            int16_t dx = x * mag / 200;
+            int16_t dy = y * mag / 200;
             mx += dx;
             my += dy;
             if (mx < 50 || mx >= 640 - 50 || my < 50 || my >= 480 - 50) {
