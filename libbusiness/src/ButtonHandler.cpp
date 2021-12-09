@@ -35,7 +35,7 @@ bool ButtonHandler::poll() {
                     vnc.key(down[0], XK_Escape);
                     break;
                 case 1:
-                    vnc.key(down[1], XK_F3);
+                    vnc.key(down[1], XK_KP_Space);
                     break;
                 case 2:
                     vnc.key(down[2], 'e');
