@@ -61,6 +61,8 @@ module vga_translate(
     reg [15:0] box_w;
     reg [15:0] box_h;
 
+    reg [1:0] last_byteenable;
+
     always @(posedge clk) begin
         if(reset) begin
             current_base_addr <= 'h0;
@@ -70,7 +72,10 @@ module vga_translate(
             box_y <= 0;
             box_w <= 0;
             box_h <= 0;
+            last_byteenable <= 'b0;
         end else if (hps_write && ~hps_waitrequest) begin
+            last_byteenable <= (hps_byteenable | last_byteenable == 2'b11)? 2'b00: hps_byteenable | last_byteenable;
+
             if(hps_address == 0) begin
                 if(hps_byteenable[0])
                     box_x[15:8] <= hps_writedata[7:0];
@@ -93,13 +98,13 @@ module vga_translate(
                     box_h[7:0] <= hps_writedata[15:8];
             end else if(hps_address == 4) begin
                 // Setup variables based on box definition
-                if(hps_byteenable[1]) begin
+                if(last_byteenable | hps_byteenable == 2'b11) begin
                     row_addr_pre <= box_y;
                     col_addr_pre <= box_x;
                     current_base_addr <= 'h0;
                 end
             end else if(hps_address >= 6) begin 
-                if(hps_byteenable[1]) begin
+                if(last_byteenable | hps_byteenable == 2'b11) begin
                     if(col_addr_pre >= box_w + box_x - 1) begin
                         row_addr_pre <= row_addr + 1;
                         col_addr_pre <= box_x;
