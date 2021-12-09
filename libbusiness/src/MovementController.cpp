@@ -143,9 +143,9 @@ void MovementController::poll() {
     }
     uint32_t ynew = 0;
     if (angle > M_PI / 8 && angle < 7 * M_PI / 8) {
-        ynew = 'w';
-    } else if (angle < -M_PI / 8 && angle > -7 * M_PI / 8) {
         ynew = 's';
+    } else if (angle < -M_PI / 8 && angle > -7 * M_PI / 8) {
+        ynew = 'w';
     }
     if (xnew != xdown) {
         if (xdown) {
