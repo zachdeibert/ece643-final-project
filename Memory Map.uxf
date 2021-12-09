@@ -850,7 +850,7 @@ bg=red</panel_attributes>
       <h>120</h>
     </coordinates>
     <panel_attributes>C000000C
-C01FFFFF
+C00FFFFF
 bg=green</panel_attributes>
     <additional_attributes/>
   </element>
